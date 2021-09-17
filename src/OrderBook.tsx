@@ -10,6 +10,13 @@ const UIMessages = {
   ErrorDataParse: 'Unable to parse server data'
 }
 
+const BookDataConstants = {
+  Feed: 'feed',
+  Asks: 'asks',
+  Bids: 'bids',
+  SnapshotFeed: 'book_ui_1_snapshot'
+}
+
 let client = new W3CWebSocket('wss://www.cryptofacilities.com/ws/v1')
 const subMessage = '{"event":"subscribe","feed":"book_ui_1","product_ids":["PI_XBTUSD"]}'
 const ReconnectWait = 3000
@@ -20,7 +27,7 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
     super(props)
 
     this.state = {
-      bookData: { buys: [], sells: []},
+      bookData: null,
       dataError: '',
       connected: false
     }
@@ -35,12 +42,22 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
       })
     }
     client.onmessage = (message: IMessageEvent) => {
-      this.count++
       try {
         const messageData = JSON.parse(message.data.toString())
 
+        // TODO: Remove this to enable live feed
+        this.count++
         if (this.count < 20) {
           console.log(messageData)
+        }
+
+        if (messageData[BookDataConstants.Feed] === BookDataConstants.SnapshotFeed) {
+          this.setState({
+            bookData: {
+              buys: messageData[BookDataConstants.Bids],
+              sells: messageData[BookDataConstants.Asks]
+            }
+          })
         }
       } catch (e) {
         this.setState({
@@ -71,9 +88,10 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
         <h3>OrderBook</h3>
         {!this.state.connected && <div className="orderbook-loading">{UIMessages.Loading}</div>}
         {this.state.dataError !== '' && <div className="orderbook-error">{UIMessages.ErrorDataParse}</div>}
-        {this.state.connected && this.state.dataError === '' &&
+        {this.state.connected && this.state.dataError === '' && this.state.bookData &&
           <div>
-            <OrderList />
+            <OrderList pricePoints={this.state.bookData.buys} listType={'buys'} />
+            <OrderList pricePoints={this.state.bookData.sells} listType={'sells'} />
           </div>
         }
       </div>

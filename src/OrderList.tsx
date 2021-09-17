@@ -1,6 +1,7 @@
-import React from 'react'
+import { OrderListProps } from './interfaces'
 
-const OrderList = () => {
+const OrderList = (props: OrderListProps) => {
+  console.log(props)
   return (
     <div>OrderList</div>
   )
