@@ -3,19 +3,7 @@ import './OrderBook.css'
 import { OrderBookProps, OrderBookState } from './interfaces'
 import { IMessageEvent, w3cwebsocket as W3CWebSocket } from 'websocket'
 import OrderList from './OrderList'
-
-// string constants for future localization
-const UIMessages = {
-  Loading: 'Loading...',
-  ErrorDataParse: 'Unable to parse server data'
-}
-
-const BookDataConstants = {
-  Feed: 'feed',
-  Asks: 'asks',
-  Bids: 'bids',
-  SnapshotFeed: 'book_ui_1_snapshot'
-}
+import { UIMessages, BookDataConstants } from './Constants'
 
 const subMessage = '{"event":"subscribe","feed":"book_ui_1","product_ids":["PI_XBTUSD"]}'
 let client: W3CWebSocket

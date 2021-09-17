@@ -10,19 +10,13 @@ jest.mock('websocket', () => {
 
   }
   class wsocket {
-    constructor(uri: string) {
-      console.log(uri)
-    }
     onopen() {
-      console.log('mock onopen')
     }
     onmessage(message: IMessageEvent) {
     }
     send(message: string) {
-      console.log('mock send ' + message)
     }
     close() {
-      console.log('mock close')
     }
   }
   return {
