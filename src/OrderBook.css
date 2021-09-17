@@ -1,0 +1,12 @@
+.oderbook {
+  margin: 0 auto;
+}
+
+.orderbook-loading {
+  font-size: 12px;
+}
+
+.orderbook-error {
+  color: crimson;
+  font-size: 12px;
+}
