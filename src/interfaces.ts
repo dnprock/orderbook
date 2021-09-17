@@ -3,13 +3,16 @@ export interface OrderBookProps {
 }
 
 export interface OrderListProps {
-  pricePoints: []
+  pricePoints: [number, number][]
   listType: 'buys' | 'sells'
 }
 
+export interface OrderListState {
+  scrollPosition: number
+}
 export interface BookData {
-  buys: []
-  sells: []
+  buys: [number, number][]
+  sells: [number, number][]
 }
 
 export interface OrderBookState {
