@@ -57,8 +57,8 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
         if (messageData[BookDataConstants.Feed] === BookDataConstants.SnapshotFeed) {
           this.setState({
             bookData: {
-              buys: messageData[BookDataConstants.Bids],
-              sells: messageData[BookDataConstants.Asks]
+              buy: messageData[BookDataConstants.Bids],
+              sell: messageData[BookDataConstants.Asks]
             }
           })
         }
@@ -86,14 +86,16 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
 
   render() {
     return (
-      <div className="orderbook">
-        <h3>OrderBook</h3>
-        {!this.state.connected && <div className="orderbook-loading">{UIMessages.Loading}</div>}
-        {this.state.dataError !== '' && <div className="orderbook-error">{UIMessages.ErrorDataParse}</div>}
+      <div className='orderbook'>
+        <div className='orderbook-header'>
+          <b>OrderBook</b>
+        </div>
+        {!this.state.connected && <div className='orderbook-loading'>{UIMessages.Loading}</div>}
+        {this.state.dataError !== '' && <div className='orderbook-error'>{UIMessages.ErrorDataParse}</div>}
         {this.state.connected && this.state.dataError === '' && this.state.bookData &&
-          <div className="lists">
-            <OrderList pricePoints={this.state.bookData.buys} listType={'buys'} />
-            <OrderList pricePoints={this.state.bookData.sells} listType={'sells'} />
+          <div className='lists'>
+            <OrderList pricePoints={this.state.bookData.buy} listType={'buy'} />
+            <OrderList pricePoints={this.state.bookData.sell} listType={'sell'} />
           </div>
         }
       </div>

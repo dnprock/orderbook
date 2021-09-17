@@ -23,7 +23,7 @@ class OrderList extends React.Component<OrderListProps, OrderListState> {
   }
 
   updateScrollPosition() {
-    console.log('scroll')
+    // TODO: optimize scroll performance
   }
 
   setListRef(element: HTMLDivElement) {
@@ -31,13 +31,26 @@ class OrderList extends React.Component<OrderListProps, OrderListState> {
   }
 
   render() {
+    let total = 0
     return (
       <div className='order-list col-1'>
         <div className='order-list-container' ref={this.setListRef}>
           OrderList {this.props.listType}
-          {this.props.pricePoints.map((point, index) => (
-            <div key={'point-' + index}>{point[0]}: {point[1]}</div>
-          ))}
+          <div className='price-row'>
+            <div className='order-col-1'>Total</div>
+            <div className='order-col-1'>Size</div>
+            <div className='order-col-2'>Price</div>
+          </div>
+          {this.props.pricePoints.map((point, index) => {
+            total += point[1]
+            return (
+              <div key={'price-row-' + index} className='price-row'>
+                <div key={'price-total-' + index} className='order-col-1'>{total}</div>
+                <div key={'price-size-' + index} className='order-col-1'>{point[1]}</div>
+                <div key={'price-point-' + index} className='order-col-2'>{point[0]}</div>
+              </div>
+            )
+          })}
         </div>
       </div>
     )

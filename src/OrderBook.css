@@ -12,6 +12,10 @@
   font-size: 12px;
 }
 
+.orderbook-header {
+  margin-top: 10px;
+}
+
 .lists {
   width: 100%;
 }
@@ -23,6 +27,7 @@
 .order-list-container {
   border: 1px solid #ccc;
   margin: 5px;
+  padding: 10px 20px 10px 0px;
   height: 400px;
   overflow-y: scroll;
 }
@@ -39,3 +44,10 @@
     width: 100%;
   }
 }
+
+[class*="order-col-"] {
+  text-align: right;
+}
+
+.order-col-1 { width: 33% }
+.order-col-2 { width: 34% }

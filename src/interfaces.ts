@@ -4,15 +4,15 @@ export interface OrderBookProps {
 
 export interface OrderListProps {
   pricePoints: [number, number][]
-  listType: 'buys' | 'sells'
+  listType: 'buy' | 'sell'
 }
 
 export interface OrderListState {
   scrollPosition: number
 }
 export interface BookData {
-  buys: [number, number][]
-  sells: [number, number][]
+  buy: [number, number][]
+  sell: [number, number][]
 }
 
 export interface OrderBookState {
