@@ -88,7 +88,7 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
     return (
       <div className='orderbook'>
         <div className='orderbook-header'>
-          <b>OrderBook</b>
+          <b>Order Book</b>
         </div>
         {!this.state.connected && <div className='orderbook-loading'>{UIMessages.Loading}</div>}
         {this.state.dataError !== '' && <div className='orderbook-error'>{UIMessages.ErrorDataParse}</div>}
