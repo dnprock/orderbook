@@ -14,14 +14,15 @@ jest.mock('websocket', () => {
       console.log(uri)
     }
     onopen() {
+      console.log('mock onopen')
     }
     onmessage(message: IMessageEvent) {
     }
     send(message: string) {
-      console.log('send ' + message)
+      console.log('mock send ' + message)
     }
     close() {
-      console.log('close')
+      console.log('mock close')
     }
   }
   return {

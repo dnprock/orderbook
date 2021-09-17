@@ -17,8 +17,8 @@ const BookDataConstants = {
   SnapshotFeed: 'book_ui_1_snapshot'
 }
 
-let client = new W3CWebSocket('wss://www.cryptofacilities.com/ws/v1')
 const subMessage = '{"event":"subscribe","feed":"book_ui_1","product_ids":["PI_XBTUSD"]}'
+let client: W3CWebSocket
 //const ReconnectWait = 3000
 class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
   private count = 0
@@ -34,6 +34,7 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
   }
 
   setupClient() {
+    client = new W3CWebSocket('wss://www.cryptofacilities.com/ws/v1')
     //const self = this
     client.onopen = () => {
       client.send(subMessage)
