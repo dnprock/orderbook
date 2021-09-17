@@ -2,8 +2,13 @@ export interface OrderBookProps {
 
 }
 
+export interface BookData {
+  buys: []
+  sells: []
+}
+
 export interface OrderBookState {
-  bookData: []
+  bookData: BookData
   dataError: string
   connected: boolean
 }
