@@ -1,8 +1,22 @@
-import { render, screen } from '@testing-library/react'
 import OrderBook from './OrderBook'
+import { mount } from 'enzyme'
+import Enzyme from 'enzyme'
+import Adapter from '@wojtekmaj/enzyme-adapter-react-17'
+
+Enzyme.configure({ adapter: new Adapter() })
 
 test('renders OrderBook title', () => {
-  render(<OrderBook />)
-  const textEl = screen.getByText(/Order Book/i)
-  expect(textEl).toBeInTheDocument()
-});
+  let wrapper = mount(<OrderBook />)
+  expect(wrapper.text()).toContain('Order Book')
+})
+
+test('renders Loading if not connected', () => {
+  let wrapper = mount(<OrderBook />)
+  expect(wrapper.text()).toContain('Loading...')
+})
+
+test('not renders Loading if connected', () => {
+  let wrapper = mount(<OrderBook />)
+  wrapper.instance().setState({connected: true})
+  expect(wrapper.text()).not.toContain('Loading...')
+})

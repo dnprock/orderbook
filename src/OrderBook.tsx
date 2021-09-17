@@ -49,7 +49,7 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
         // TODO: Remove this to enable live feed
         this.count++
         if (this.count < 20) {
-          console.log(messageData)
+          console.log(message.data.toString())
         } else {
           // TODO: close connection for test, Remove after
           client.close()
