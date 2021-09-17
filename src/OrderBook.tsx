@@ -19,7 +19,7 @@ const BookDataConstants = {
 
 let client = new W3CWebSocket('wss://www.cryptofacilities.com/ws/v1')
 const subMessage = '{"event":"subscribe","feed":"book_ui_1","product_ids":["PI_XBTUSD"]}'
-const ReconnectWait = 3000
+//const ReconnectWait = 3000
 class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
   private count = 0
 
@@ -34,8 +34,8 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
   }
 
   setupClient() {
+    //const self = this
     client.onopen = () => {
-      console.log('WebSocket Client Connected');
       client.send(subMessage)
       this.setState({
         connected: true
@@ -49,6 +49,9 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
         this.count++
         if (this.count < 20) {
           console.log(messageData)
+        } else {
+          // TODO: close connection for test, Remove after
+          client.close()
         }
 
         if (messageData[BookDataConstants.Feed] === BookDataConstants.SnapshotFeed) {
@@ -65,12 +68,11 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
         })
       }
     }
-    const self = this
     client.onclose = () => {
       // TODO: simulate test for this
-      setTimeout(function() {
-        self.setupClient()
-      }, ReconnectWait)
+      //setTimeout(function() {
+      //  self.setupClient()
+      //}, ReconnectWait)
     }
   }
 
@@ -89,7 +91,7 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
         {!this.state.connected && <div className="orderbook-loading">{UIMessages.Loading}</div>}
         {this.state.dataError !== '' && <div className="orderbook-error">{UIMessages.ErrorDataParse}</div>}
         {this.state.connected && this.state.dataError === '' && this.state.bookData &&
-          <div>
+          <div className="lists">
             <OrderList pricePoints={this.state.bookData.buys} listType={'buys'} />
             <OrderList pricePoints={this.state.bookData.sells} listType={'sells'} />
           </div>

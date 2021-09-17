@@ -31,11 +31,13 @@ class OrderList extends React.Component<OrderListProps, OrderListState> {
 
   render() {
     return (
-      <div className='order-list' ref={this.setRef}>
-        OrderList {this.props.listType}
-        {this.props.pricePoints.map((point, index) => (
-          <div key={'point-' + index}>{point[0]}: {point[1]}</div>
-        ))}
+      <div className='order-list col-1' ref={this.setRef}>
+        <div className='order-list-container'>
+          OrderList {this.props.listType}
+          {this.props.pricePoints.map((point, index) => (
+            <div key={'point-' + index}>{point[0]}: {point[1]}</div>
+          ))}
+        </div>
       </div>
     )
   }

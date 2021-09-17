@@ -1,5 +1,6 @@
-.oderbook {
+.orderbook {
   margin: 0 auto;
+  width: 95%;
 }
 
 .orderbook-loading {
@@ -9,4 +10,31 @@
 .orderbook-error {
   color: crimson;
   font-size: 12px;
+}
+
+.lists {
+  width: 100%;
+}
+
+.order-list {
+  padding: 5px;
+  height: 400px;
+}
+
+.order-list-container {
+  border: 1px solid #ccc;
+  margin: 5px;
+}
+
+[class*="col-"] {
+  float: left;
+}
+
+.col-1 { width: 50% }
+
+@media only screen and (max-width: 768px) {
+  /* For mobile phones: */
+  [class*="col-"] {
+    width: 100%;
+  }
 }
