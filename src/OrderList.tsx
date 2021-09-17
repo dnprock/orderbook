@@ -12,7 +12,7 @@ class OrderList extends React.Component<OrderListProps, OrderListState> {
       scrollPosition: 0
     }
 
-    this.setRef = this.setRef.bind(this)
+    this.setListRef = this.setListRef.bind(this)
   }
 
   componentDidMount() {
@@ -23,16 +23,17 @@ class OrderList extends React.Component<OrderListProps, OrderListState> {
   }
 
   updateScrollPosition() {
+    console.log('scroll')
   }
 
-  setRef(element: HTMLDivElement) {
+  setListRef(element: HTMLDivElement) {
     this.listRef = element
   }
 
   render() {
     return (
-      <div className='order-list col-1' ref={this.setRef}>
-        <div className='order-list-container'>
+      <div className='order-list col-1'>
+        <div className='order-list-container' ref={this.setListRef}>
           OrderList {this.props.listType}
           {this.props.pricePoints.map((point, index) => (
             <div key={'point-' + index}>{point[0]}: {point[1]}</div>

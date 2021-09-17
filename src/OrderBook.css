@@ -18,12 +18,13 @@
 
 .order-list {
   padding: 5px;
-  height: 400px;
 }
 
 .order-list-container {
   border: 1px solid #ccc;
   margin: 5px;
+  height: 400px;
+  overflow-y: scroll;
 }
 
 [class*="col-"] {
