@@ -32,6 +32,7 @@ class OrderList extends React.Component<OrderListProps, OrderListState> {
 
   render() {
     let total = 0
+    let prices = Object.keys(this.props.pricePoints)
     return (
       <div className='order-list col-1'>
         <div className='order-list-container' ref={this.setListRef}>
@@ -41,13 +42,13 @@ class OrderList extends React.Component<OrderListProps, OrderListState> {
             <div className='order-col-1'>Size</div>
             <div className='order-col-2'>Price</div>
           </div>
-          {this.props.pricePoints.map((point, index) => {
-            total += point[1]
+          {prices.map((price, index) => {
+            total += this.props.pricePoints[price]
             return (
               <div key={'price-row-' + index} className='price-row'>
-                <div key={'price-total-' + index} className='order-col-1'>{total}</div>
-                <div key={'price-size-' + index} className='order-col-1'>{point[1]}</div>
-                <div key={'price-point-' + index} className='order-col-2'>{point[0]}</div>
+                <div key={'price-total-' + index} className='order-col-1 order-total'>{total}</div>
+                <div key={'price-size-' + index} className='order-col-1 order-size'>{this.props.pricePoints[price]}</div>
+                <div key={'price-point-' + index} className='order-col-2 order-price'>{price}</div>
               </div>
             )
           })}

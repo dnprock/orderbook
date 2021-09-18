@@ -3,16 +3,20 @@ export interface OrderBookProps {
 }
 
 export interface OrderListProps {
-  pricePoints: [number, number][]
+  pricePoints: IDataHash
   listType: 'buy' | 'sell'
 }
 
 export interface OrderListState {
   scrollPosition: number
 }
+
+export interface IDataHash {
+  [price: string]: number
+}
 export interface BookData {
-  buy: [number, number][]
-  sell: [number, number][]
+  buy: IDataHash
+  sell: IDataHash
 }
 
 export interface OrderBookState {

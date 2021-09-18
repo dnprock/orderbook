@@ -3,6 +3,7 @@ import { mount } from 'enzyme'
 import Enzyme from 'enzyme'
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17'
 import snapshotJson from './tests/msg_snapshot.json'
+import { convertBookDataToHash } from './utilities'
 
 Enzyme.configure({ adapter: new Adapter() })
 
@@ -27,10 +28,10 @@ test('renders snapshot', () => {
   wrapper.instance().setState({
     connected: true,
     bookData: {
-      buy: snapshotJson['bids'],
-      sell: snapshotJson['asks']
+      buy: convertBookDataToHash(snapshotJson['bids'] as [number, number][]),
+      sell: convertBookDataToHash(snapshotJson['asks'] as [number, number][])
     }
   })
   expect(wrapper.text()).toContain('47239.5') // check price
-  expect(wrapper.text()).toContain('326444') // check total
+  expect(wrapper.html()).toContain('326444') // check total
 })

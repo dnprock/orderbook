@@ -1,9 +1,10 @@
 import React from 'react'
 import './OrderBook.css'
-import { FeedResponse, OrderBookProps, OrderBookState } from './interfaces'
+import { FeedResponse, IDataHash, OrderBookProps, OrderBookState } from './interfaces'
 import { IMessageEvent, w3cwebsocket as W3CWebSocket } from 'websocket'
 import OrderList from './OrderList'
 import { UIMessages, BookDataConstants } from './Constants'
+import { convertBookDataToHash } from './utilities'
 
 const subMessage = '{"event":"subscribe","feed":"book_ui_1","product_ids":["PI_XBTUSD"]}'
 let client: W3CWebSocket
@@ -46,8 +47,8 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
         if (messageData.feed === BookDataConstants.SnapshotFeed) {
           this.setState({
             bookData: {
-              buy: messageData.bids,
-              sell: messageData.asks
+              buy: convertBookDataToHash(messageData.bids),
+              sell: convertBookDataToHash(messageData.asks)
             }
           })
         } else if (messageData.feed === BookDataConstants.UpdateFeed) {
