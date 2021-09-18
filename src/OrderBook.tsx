@@ -36,11 +36,16 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
         const messageData: FeedResponse = JSON.parse(message.data.toString())
 
         // TODO: Remove this to enable live feed
-        this.count++
-        if (this.count < 20) {
+        if (Math.floor(Math.random() * 40) % 39 === 0) {
+          this.count++
           console.log(message.data.toString())
         } else {
-          // TODO: close connection for test, Remove after
+          if (messageData.feed === BookDataConstants.UpdateFeed && messageData.event === null) {
+            return
+          }
+        }
+
+        if (this.count > 10) {
           client.close()
         }
 
@@ -51,7 +56,8 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
               sell: convertBookDataToHash(messageData.asks)
             }
           })
-        } else if (messageData.feed === BookDataConstants.UpdateFeed) {
+        } else if (messageData.feed === BookDataConstants.UpdateFeed
+            && !messageData.event) {
           this.updateFeed(messageData)
         }
       } catch (e) {
@@ -68,8 +74,40 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
     }
   }
 
+  updateBook(dataHash: IDataHash, pricePoint: [number, number]) {
+    const priceStr = pricePoint[0].toString()
+    if (dataHash[priceStr]) {
+      // if price exists in hash, update size
+      if (pricePoint[1] === 0) {
+        // remove price point
+        delete dataHash[priceStr]
+      } else {
+        // update new book size for price point
+        dataHash[priceStr] = pricePoint[1]
+      }
+    } else {
+      // if price does not exist in hash, add
+      if (pricePoint[1] !== 0) {
+        dataHash[priceStr] = pricePoint[1]
+      }
+    }
+  }
+
   updateFeed(messageData: FeedResponse) {
-    // convert current bookData to a hash for faster lookup
+    let bookData = this.state.bookData
+    messageData.bids.forEach((pricePoint) => {
+      if (bookData) {
+        this.updateBook(bookData.buy, pricePoint)
+      }
+    })
+    messageData.asks.forEach((pricePoint) => {
+      if (bookData) {
+        this.updateBook(bookData.sell, pricePoint)
+      }
+    })
+    this.setState({
+      bookData: bookData
+    })
   }
 
   componentDidMount() {

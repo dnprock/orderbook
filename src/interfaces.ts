@@ -8,7 +8,8 @@ export interface OrderListProps {
 }
 
 export interface OrderListState {
-  scrollPosition: number
+  scrollPosition: number,
+  pricePoints: IDataHash
 }
 
 export interface IDataHash {
@@ -26,6 +27,7 @@ export interface OrderBookState {
 }
 
 export interface FeedResponse {
+  event: string | null
   feed: string
   product_id: string
   bids: [number, number][]

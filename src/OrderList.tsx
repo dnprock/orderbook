@@ -9,7 +9,8 @@ class OrderList extends React.Component<OrderListProps, OrderListState> {
 
     this.listRef = React.createRef<HTMLDivElement>().current!
     this.state = {
-      scrollPosition: 0
+      scrollPosition: 0,
+      pricePoints: props.pricePoints
     }
 
     this.setListRef = this.setListRef.bind(this)
