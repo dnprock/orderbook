@@ -20,3 +20,10 @@ export interface OrderBookState {
   dataError: string
   connected: boolean
 }
+
+export interface FeedResponse {
+  feed: string
+  product_id: string
+  bids: [number, number][]
+  asks: [number, number][]
+}

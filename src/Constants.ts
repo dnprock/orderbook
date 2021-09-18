@@ -5,8 +5,6 @@ export const UIMessages = {
 }
 
 export const BookDataConstants = {
-  Feed: 'feed',
-  Asks: 'asks',
-  Bids: 'bids',
-  SnapshotFeed: 'book_ui_1_snapshot'
+  SnapshotFeed: 'book_ui_1_snapshot',
+  UpdateFeed: 'book_ui_1'
 }

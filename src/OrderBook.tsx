@@ -1,13 +1,13 @@
 import React from 'react'
 import './OrderBook.css'
-import { OrderBookProps, OrderBookState } from './interfaces'
+import { FeedResponse, OrderBookProps, OrderBookState } from './interfaces'
 import { IMessageEvent, w3cwebsocket as W3CWebSocket } from 'websocket'
 import OrderList from './OrderList'
 import { UIMessages, BookDataConstants } from './Constants'
 
 const subMessage = '{"event":"subscribe","feed":"book_ui_1","product_ids":["PI_XBTUSD"]}'
 let client: W3CWebSocket
-//const ReconnectWait = 3000
+const ReconnectWait = 3000
 class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
   private count = 0
 
@@ -23,7 +23,7 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
 
   setupClient() {
     client = new W3CWebSocket('wss://www.cryptofacilities.com/ws/v1')
-    //const self = this
+    const self = this
     client.onopen = () => {
       client.send(subMessage)
       this.setState({
@@ -32,7 +32,7 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
     }
     client.onmessage = (message: IMessageEvent) => {
       try {
-        const messageData = JSON.parse(message.data.toString())
+        const messageData: FeedResponse = JSON.parse(message.data.toString())
 
         // TODO: Remove this to enable live feed
         this.count++
@@ -43,13 +43,15 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
           client.close()
         }
 
-        if (messageData[BookDataConstants.Feed] === BookDataConstants.SnapshotFeed) {
+        if (messageData.feed === BookDataConstants.SnapshotFeed) {
           this.setState({
             bookData: {
-              buy: messageData[BookDataConstants.Bids],
-              sell: messageData[BookDataConstants.Asks]
+              buy: messageData.bids,
+              sell: messageData.asks
             }
           })
+        } else if (messageData.feed === BookDataConstants.UpdateFeed) {
+          this.updateFeed(messageData)
         }
       } catch (e) {
         this.setState({
@@ -59,10 +61,14 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
     }
     client.onclose = () => {
       // TODO: simulate test for this
-      //setTimeout(function() {
-      //  self.setupClient()
-      //}, ReconnectWait)
+      setTimeout(function() {
+        self.setupClient()
+      }, ReconnectWait)
     }
+  }
+
+  updateFeed(messageData: FeedResponse) {
+    // convert current bookData to a hash for faster lookup
   }
 
   componentDidMount() {
