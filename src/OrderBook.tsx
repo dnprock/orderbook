@@ -10,7 +10,7 @@ import throttle from 'lodash/throttle'
 const subMessage = '{"event":"subscribe","feed":"book_ui_1","product_ids":["PI_XBTUSD"]}'
 let client: W3CWebSocket
 const ReconnectWait = 3000
-const RefreshRate = 0.1 // number of times to update every second
+const RefreshRate = 0.001 // number of times to update every second
 class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
   private count = 0
 

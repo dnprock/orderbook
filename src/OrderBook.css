@@ -13,7 +13,7 @@
 }
 
 .orderbook-header {
-  margin-top: 10px;
+  padding-top: 10px;
 }
 
 .lists {
@@ -28,8 +28,8 @@
   border: 1px solid #ccc;
   margin: 5px;
   padding: 10px 20px 10px 0px;
-  height: 400px;
-  overflow-y: scroll;
+  height: 100%;
+  overflow-y: auto;
 }
 
 [class*="col-"] {
