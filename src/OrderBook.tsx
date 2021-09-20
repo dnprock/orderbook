@@ -5,10 +5,12 @@ import { IMessageEvent, w3cwebsocket as W3CWebSocket } from 'websocket'
 import OrderList from './OrderList'
 import { UIMessages, BookDataConstants } from './Constants'
 import { convertBookDataToHash } from './utilities'
+import throttle from 'lodash/throttle'
 
 const subMessage = '{"event":"subscribe","feed":"book_ui_1","product_ids":["PI_XBTUSD"]}'
 let client: W3CWebSocket
 const ReconnectWait = 3000
+const UpdateFrames = 2 // number of frames to update every second
 class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
   private count = 0
 
@@ -26,6 +28,13 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
     console.log('setupClient')
     client = new W3CWebSocket('wss://www.cryptofacilities.com/ws/v1')
     const self = this
+
+    const throttledUpdateFeed = throttle((md) => {
+      console.log('throttle call')
+      this.updateFeed(md)
+      this.count++
+    }, 1000 / UpdateFrames)
+
     client.onopen = () => {
       client.send(subMessage)
       this.setState({
@@ -39,14 +48,6 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
         // TODO: Remove this to enable live feed
         if (messageData.feed === BookDataConstants.SnapshotFeed) {
           console.log(message.data.toString())
-        }
-        if (Math.floor(Math.random() * 40) % 39 === 0) {
-          this.count++
-          console.log(message.data.toString())
-        } else {
-          if (messageData.feed === BookDataConstants.UpdateFeed && messageData.event === null) {
-            return
-          }
         }
 
         if (this.count > 10) {
@@ -62,7 +63,7 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
           })
         } else if (messageData.feed === BookDataConstants.UpdateFeed
             && !messageData.event) {
-          this.updateFeed(messageData)
+          throttledUpdateFeed(messageData)
         }
       } catch (e) {
         this.setState({
