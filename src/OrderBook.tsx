@@ -111,6 +111,8 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
   }
 
   componentWillUnmount() {
+    // cancel any throttledUpdate call
+    this.throttledUpdateBook.cancel()
     client.close()
   }
 

@@ -3,33 +3,13 @@ import { OrderListProps, OrderListState } from './interfaces'
 import { formatNumber, formatPrice } from './utilities'
 
 class OrderList extends React.Component<OrderListProps, OrderListState> {
-  private listRef: HTMLDivElement
-
   constructor(props: OrderListProps) {
     super(props)
 
-    this.listRef = React.createRef<HTMLDivElement>().current!
     this.state = {
       scrollPosition: 0,
       pricePoints: props.pricePoints
     }
-
-    this.setListRef = this.setListRef.bind(this)
-  }
-
-  componentDidMount() {
-    this.listRef.addEventListener('scroll', this.updateScrollPosition)
-  }
-  componentWillUnmount() {
-    this.listRef.removeEventListener('scroll', this.updateScrollPosition)
-  }
-
-  updateScrollPosition() {
-    // TODO: optimize scroll performance
-  }
-
-  setListRef(element: HTMLDivElement) {
-    this.listRef = element
   }
 
   render() {
@@ -44,7 +24,7 @@ class OrderList extends React.Component<OrderListProps, OrderListState> {
     }
     return (
       <div className='order-list col-1'>
-        <div className='order-list-container' ref={this.setListRef}>
+        <div className='order-list-container'>
           <div className='price-row'>
             {this.props.listType === 'buy' &&
               <div className='order-list-header'>
