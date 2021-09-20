@@ -30,6 +30,6 @@ export interface FeedResponse {
   event: string | null
   feed: string
   product_id: string
-  bids: [number, number][]
-  asks: [number, number][]
+  bids: [number, number][] | []
+  asks: [number, number][] | []
 }

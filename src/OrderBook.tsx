@@ -23,6 +23,7 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
   }
 
   setupClient() {
+    console.log('setupClient')
     client = new W3CWebSocket('wss://www.cryptofacilities.com/ws/v1')
     const self = this
     client.onopen = () => {
@@ -36,6 +37,9 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
         const messageData: FeedResponse = JSON.parse(message.data.toString())
 
         // TODO: Remove this to enable live feed
+        if (messageData.feed === BookDataConstants.SnapshotFeed) {
+          console.log(message.data.toString())
+        }
         if (Math.floor(Math.random() * 40) % 39 === 0) {
           this.count++
           console.log(message.data.toString())
@@ -67,9 +71,9 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
       }
     }
     client.onclose = () => {
-      // TODO: simulate test for this
+      console.log('onclose')
       setTimeout(function() {
-        self.setupClient()
+        //self.setupClient()
       }, ReconnectWait)
     }
   }

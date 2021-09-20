@@ -34,6 +34,13 @@ class OrderList extends React.Component<OrderListProps, OrderListState> {
   render() {
     let total = 0
     let prices = Object.keys(this.props.pricePoints)
+    if (this.props.listType === 'sell') {
+      // sell side, lowest price first
+      prices.sort()
+    } else {
+      // buy side, highest price first
+      prices.sort().reverse()
+    }
     return (
       <div className='order-list col-1'>
         <div className='order-list-container' ref={this.setListRef}>
