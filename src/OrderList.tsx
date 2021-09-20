@@ -44,21 +44,44 @@ class OrderList extends React.Component<OrderListProps, OrderListState> {
     return (
       <div className='order-list col-1'>
         <div className='order-list-container' ref={this.setListRef}>
-          OrderList {this.props.listType}
           <div className='price-row'>
-            <div className='order-col-1'>Total</div>
-            <div className='order-col-1'>Size</div>
-            <div className='order-col-2'>Price</div>
+            {this.props.listType === 'buy' &&
+              <div className='order-list-header'>
+                <div className='order-col-1'>TOTAL</div>
+                <div className='order-col-1'>SIZE</div>
+                <div className='order-col-2'>PRICE</div>
+              </div>
+            }
+            {this.props.listType === 'sell' &&
+              <div className='order-list-header'>
+                <div className='order-col-2'>PRICE</div>
+                <div className='order-col-1'>SIZE</div>
+                <div className='order-col-1'>TOTAL</div>
+              </div>
+            }
           </div>
           {prices.map((price, index) => {
             total += this.props.pricePoints[price]
-            return (
-              <div key={'price-row-' + index} className='price-row'>
-                <div key={'price-total-' + index} className='order-col-1 order-total'>{total}</div>
-                <div key={'price-size-' + index} className='order-col-1 order-size'>{this.props.pricePoints[price]}</div>
-                <div key={'price-point-' + index} className='order-col-2 order-price'>{price}</div>
-              </div>
-            )
+            const divTotal = <div key={'price-total-' + index} className='order-col-1 order-total'>{total}</div>
+            const divSize = <div key={'price-size-' + index} className='order-col-1 order-size'>{this.props.pricePoints[price]}</div>
+            const divPrice = <div key={'price-point-' + index} className='order-col-2 order-price'>{price}</div>
+            if (this.props.listType === 'buy') {
+              return (
+                <div key={'price-row-' + index} className='price-row'>
+                  {divTotal}
+                  {divSize}
+                  {divPrice}
+                </div>
+              )
+            } else {
+              return (
+                <div key={'price-row-' + index} className='price-row'>
+                  {divPrice}
+                  {divSize}
+                  {divTotal}
+                </div>
+              )
+            }
           })}
         </div>
       </div>

@@ -14,6 +14,7 @@
 
 .orderbook-header {
   padding-top: 10px;
+  padding-bottom: 10px;
 }
 
 .lists {
@@ -30,6 +31,18 @@
   padding: 10px 20px 10px 0px;
   height: 100%;
   overflow-y: auto;
+}
+
+.order-list-header {
+  width: 100%;
+  float: left;
+  margin-bottom: 10px;
+}
+
+.price-row {
+  width: 100%;
+  float: left;
+  margin-bottom: 10px;
 }
 
 [class*="col-"] {
