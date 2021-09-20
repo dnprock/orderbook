@@ -1,5 +1,6 @@
 import React from 'react'
 import { OrderListProps, OrderListState } from './interfaces'
+import { formatNumber, formatPrice } from './utilities'
 
 class OrderList extends React.Component<OrderListProps, OrderListState> {
   private listRef: HTMLDivElement
@@ -62,9 +63,9 @@ class OrderList extends React.Component<OrderListProps, OrderListState> {
           </div>
           {prices.map((price, index) => {
             total += this.props.pricePoints[price]
-            const divTotal = <div key={'price-total-' + index} className='order-col-1 order-total'>{total}</div>
-            const divSize = <div key={'price-size-' + index} className='order-col-1 order-size'>{this.props.pricePoints[price]}</div>
-            const divPrice = <div key={'price-point-' + index} className='order-col-2 order-price'>{price}</div>
+            const divTotal = <div key={'price-total-' + index} className='order-col-1 order-total'>{formatNumber(total)}</div>
+            const divSize = <div key={'price-size-' + index} className='order-col-1 order-size'>{formatNumber(this.props.pricePoints[price])}</div>
+            const divPrice = <div key={'price-point-' + index} className='order-col-2 order-price'>{formatPrice(price)}</div>
             if (this.props.listType === 'buy') {
               return (
                 <div key={'price-row-' + index} className='price-row'>
