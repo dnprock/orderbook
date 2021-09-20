@@ -14,11 +14,35 @@
 
 .orderbook-header {
   padding-top: 10px;
-  padding-bottom: 10px;
+  padding-bottom: 30px;
+  width: 100%;
+}
+
+.orderbook-header-left {
+  width: 33%;
+  float: left;
+  text-align: left;
+  font-size: 18px;
+}
+
+.orderbook-header-center {
+  width: 33%;
+  float: left;
+  font-size: 14px;
+  color: rgb(256, 256, 256, 0.8)
+}
+
+.orderbook-header-right {
+  width: 34%;
+  float: left;
+  text-align: right;
+  font-size: 14px;
+  color: rgb(256, 256, 256, 0.8)
 }
 
 .lists {
   width: 100%;
+  float: left;
 }
 
 .order-list {

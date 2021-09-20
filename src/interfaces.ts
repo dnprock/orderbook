@@ -22,6 +22,8 @@ export interface BookData {
 
 export interface OrderBookState {
   bookData: BookData | null
+  spread: number
+  spreadPercent: number
   dataError: string
   connected: boolean
 }

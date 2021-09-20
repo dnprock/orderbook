@@ -4,13 +4,13 @@ import { FeedResponse, IDataHash, OrderBookProps, OrderBookState } from './inter
 import { IMessageEvent, w3cwebsocket as W3CWebSocket } from 'websocket'
 import OrderList from './OrderList'
 import { UIMessages, BookDataConstants } from './Constants'
-import { convertBookDataToHash } from './utilities'
+import { convertBookDataToHash, formatPrice } from './utilities'
 import throttle from 'lodash/throttle'
 
 const subMessage = '{"event":"subscribe","feed":"book_ui_1","product_ids":["PI_XBTUSD"]}'
 let client: W3CWebSocket
 const ReconnectWait = 3000
-const RefreshRate = 0.001 // number of times to update every second
+const RefreshRate = 0.5 // number of times to update every second
 class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
   constructor(props: OrderBookProps) {
     super(props)
@@ -18,13 +18,17 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
     this.state = {
       bookData: null,
       dataError: '',
-      connected: false
+      connected: false,
+      spread: 0,
+      spreadPercent: 0
     }
   }
 
-  throttledUpdateBook = throttle((bookData) => {
+  throttledUpdateBook = throttle((bookData, spread, spreadPercent) => {
     this.setState({
-      bookData: bookData
+      bookData: bookData,
+      spread: spread,
+      spreadPercent: spreadPercent
     })
   }, 1000 / RefreshRate)
 
@@ -91,6 +95,21 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
     }
   }
 
+  calculateSpread() {
+    let bookData = this.state.bookData
+    if (bookData) {
+      const bids = Object.keys(bookData.buy).sort()
+      const asks = Object.keys(bookData.sell).sort()
+      // spread = (lowest ask - highest big) / midpoint * 100
+      const avg = (+asks[0] + +bids[bids.length - 1]) / 2
+      const spread = (+asks[0] - +bids[bids.length - 1])
+      const percent = Math.round((+asks[0] - +bids[bids.length - 1]) / avg * 100 * 100) / 100
+      return {spread: spread, spreadPercent: percent}
+    } else {
+      return {spread: 0, spreadPercent: 0}
+    }
+  }
+
   updateFeed(messageData: FeedResponse) {
     let bookData = this.state.bookData
     messageData.bids.forEach((pricePoint) => {
@@ -103,7 +122,8 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
         this.updateBook(bookData.sell, pricePoint)
       }
     })
-    this.throttledUpdateBook(bookData)
+    const sp = this.calculateSpread()
+    this.throttledUpdateBook(bookData, sp.spread, sp.spreadPercent)
   }
 
   componentDidMount() {
@@ -116,11 +136,18 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
     client.close()
   }
 
+  spreadText() {
+    return (this.state.spread === 0 ? 'Spread' :
+      'Spread ' + formatPrice(this.state.spread + '') + ' (' + this.state.spreadPercent + '%)')
+  }
+
   render() {
     return (
       <div className='orderbook'>
         <div className='orderbook-header'>
-          <b>Order Book</b>
+          <div className="orderbook-header-left"><b>Order Book</b></div>
+          <div className="orderbook-header-center">{this.spreadText()}</div>
+          <div className="orderbook-header-right">BTCUSD</div>
         </div>
         {!this.state.connected && <div className='orderbook-loading'>{UIMessages.Loading}</div>}
         {this.state.dataError !== '' && <div className='orderbook-error'>{UIMessages.ErrorDataParse}</div>}
