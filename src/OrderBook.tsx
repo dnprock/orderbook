@@ -10,7 +10,7 @@ import throttle from 'lodash/throttle'
 const subMessage = '{"event":"subscribe","feed":"book_ui_1","product_ids":["PI_XBTUSD"]}'
 let client: W3CWebSocket
 const ReconnectWait = 3000
-const UpdateFrames = 2 // number of frames to update every second
+const RefreshRate = 0.1 // number of times to update every second
 class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
   private count = 0
 
@@ -24,16 +24,15 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
     }
   }
 
+  throttledUpdateBook = throttle((bookData) => {
+    this.setState({
+      bookData: bookData
+    })
+  }, 1000 / RefreshRate)
+
   setupClient() {
     console.log('setupClient')
     client = new W3CWebSocket('wss://www.cryptofacilities.com/ws/v1')
-    const self = this
-
-    const throttledUpdateFeed = throttle((md) => {
-      console.log('throttle call')
-      this.updateFeed(md)
-      this.count++
-    }, 1000 / UpdateFrames)
 
     client.onopen = () => {
       client.send(subMessage)
@@ -50,7 +49,7 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
           console.log(message.data.toString())
         }
 
-        if (this.count > 10) {
+        if (this.count > 100) {
           client.close()
         }
 
@@ -63,7 +62,7 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
           })
         } else if (messageData.feed === BookDataConstants.UpdateFeed
             && !messageData.event) {
-          throttledUpdateFeed(messageData)
+          this.updateFeed(messageData)
         }
       } catch (e) {
         this.setState({
@@ -110,9 +109,7 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
         this.updateBook(bookData.sell, pricePoint)
       }
     })
-    this.setState({
-      bookData: bookData
-    })
+    this.throttledUpdateBook(bookData)
   }
 
   componentDidMount() {
