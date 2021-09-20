@@ -12,8 +12,6 @@ let client: W3CWebSocket
 const ReconnectWait = 3000
 const RefreshRate = 0.001 // number of times to update every second
 class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
-  private count = 0
-
   constructor(props: OrderBookProps) {
     super(props)
 
@@ -47,10 +45,6 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
         // TODO: Remove this to enable live feed
         if (messageData.feed === BookDataConstants.SnapshotFeed) {
           console.log(message.data.toString())
-        }
-
-        if (this.count > 100) {
-          client.close()
         }
 
         if (messageData.feed === BookDataConstants.SnapshotFeed) {

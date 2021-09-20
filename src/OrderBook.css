@@ -22,13 +22,13 @@
 }
 
 .order-list {
-  padding: 5px;
+  padding: 0px;
   font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
 }
 
 .order-list-container {
   border: 1px solid #ccc;
-  margin: 5px;
+  margin: 0px;
   padding: 10px 20px 10px 0px;
   height: 100%;
   overflow-y: auto;
