@@ -132,20 +132,22 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
 
   render() {
     return (
-      <div className='orderbook'>
+      <div>
         <div className='orderbook-header'>
           <div className="orderbook-header-left"><b>Order Book</b></div>
           <div className="orderbook-header-center">{this.spreadText()}</div>
           <div className="orderbook-header-right">BTCUSD</div>
         </div>
-        {!this.state.connected && <div className='orderbook-loading'>{UIMessages.Loading}</div>}
-        {this.state.dataError !== '' && <div className='orderbook-error'>{UIMessages.ErrorDataParse}</div>}
-        {this.state.connected && this.state.dataError === '' && this.state.bookData &&
-          <div className='lists'>
-            <OrderList pricePoints={this.state.bookData.buy} listType={'buy'} />
-            <OrderList pricePoints={this.state.bookData.sell} listType={'sell'} />
-          </div>
-        }
+        <div className='orderbook'>
+          {!this.state.connected && <div className='orderbook-loading orderbook-status'>{UIMessages.Loading}</div>}
+          {this.state.dataError !== '' && <div className='orderbook-error orderbook-status'>{UIMessages.ErrorDataParse}</div>}
+          {this.state.connected && this.state.dataError === '' && this.state.bookData &&
+            <div className='lists'>
+              <OrderList pricePoints={this.state.bookData.buy} listType={'buy'} />
+              <OrderList pricePoints={this.state.bookData.sell} listType={'sell'} />
+            </div>
+          }
+        </div>
       </div>
     )
   }
