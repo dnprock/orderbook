@@ -7,21 +7,32 @@ import { UIMessages, BookDataConstants } from './Constants'
 import { calculateSpread, convertBookDataToHash, formatPrice } from './utilities'
 import throttle from 'lodash/throttle'
 
-const subMessage = '{"event":"subscribe","feed":"book_ui_1","product_ids":["PI_XBTUSD"]}'
-let client: W3CWebSocket
+const subBTCMessage = '{"event":"subscribe","feed":"book_ui_1","product_ids":["PI_XBTUSD"]}'
+const subETHMessage = '{"event":"subscribe","feed":"book_ui_1","product_ids":["PI_ETHUSD"]}'
+const unsubBTCMessage = '{"event":"unsubscribe","feed":"book_ui_1","product_ids":["PI_XBTUSD"]}'
+const unsubETHMessage = '{"event":"unsubscribe","feed":"book_ui_1","product_ids":["PI_ETHUSD"]}'
+const wsUrl = 'wss://www.cryptofacilities.com/ws/v1'
 const ReconnectWait = 3000
 const RefreshRate = 0.5 // number of times to update every second
 class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
+  private client: W3CWebSocket | null
+  private coin: string
+
   constructor(props: OrderBookProps) {
     super(props)
+
+    this.client = null
+    this.coin = 'btc'
 
     this.state = {
       bookData: null,
       dataError: '',
       connected: false,
       spread: 0,
-      spreadPercent: 0
+      spreadPercent: 0,
     }
+
+    this.toggleFeed = this.toggleFeed.bind(this)
   }
 
   throttledUpdateBook = throttle((bookData, spread, spreadPercent) => {
@@ -34,15 +45,15 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
 
   setupClient() {
     console.log('setupClient')
-    client = new W3CWebSocket('wss://www.cryptofacilities.com/ws/v1')
+    this.client = new W3CWebSocket(wsUrl)
 
-    client.onopen = () => {
-      client.send(subMessage)
+    this.client.onopen = () => {
+      this.client && this.client.send(subBTCMessage)
       this.setState({
         connected: true
       })
     }
-    client.onmessage = (message: IMessageEvent) => {
+    this.client.onmessage = (message: IMessageEvent) => {
       try {
         const messageData: FeedResponse = JSON.parse(message.data.toString())
 
@@ -72,7 +83,7 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
         })
       }
     }
-    client.onclose = () => {
+    this.client.onclose = () => {
       console.log('onclose')
       setTimeout(function() {
         //self.setupClient()
@@ -122,12 +133,28 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
   componentWillUnmount() {
     // cancel any throttledUpdate call
     this.throttledUpdateBook.cancel()
-    client.close()
+    this.client && this.client.close()
   }
 
   spreadText() {
     return (this.state.spread === 0 ? 'Spread' :
       'Spread ' + formatPrice(this.state.spread + '') + ' (' + this.state.spreadPercent + '%)')
+  }
+
+  toggleFeed() {
+    if (this.coin === 'btc') {
+      // unsub btc
+      this.client && this.client.send(unsubBTCMessage)
+      // sub eth
+      this.client && this.client.send(subETHMessage)
+      this.coin = 'eth'
+    } else if (this.coin === 'eth') {
+      // unsub eth
+      this.client && this.client.send(unsubETHMessage)
+      // sub btc
+      this.client && this.client.send(subBTCMessage)
+      this.coin = 'btc'
+    }
   }
 
   render() {
@@ -136,7 +163,7 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
         <div className='orderbook-header'>
           <div className="orderbook-header-left"><b>Order Book</b></div>
           <div className="orderbook-header-center">{this.spreadText()}</div>
-          <div className="orderbook-header-right">BTCUSD</div>
+          <div className="orderbook-header-right">{this.coin === 'btc' ? 'BTCUSD' : 'ETHUSD'}</div>
         </div>
         <div className='orderbook'>
           {!this.state.connected && <div className='orderbook-loading orderbook-status'>{UIMessages.Loading}</div>}
@@ -149,7 +176,7 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
           }
         </div>
         <div className='orderbook-bottom'>
-          <button className='feed-toggle'>Toggle Feed</button>
+          <button className='feed-toggle' onClick={this.toggleFeed}>Toggle Feed</button>
         </div>
       </div>
     )
