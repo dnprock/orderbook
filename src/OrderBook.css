@@ -114,3 +114,48 @@
   border-radius: 5px;
   cursor: pointer;
 }
+
+.modal-window {
+  position: fixed;
+  background-color: rgba(200, 200, 200, 0.75);
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: inline;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  transition: all 0.3s;
+}
+
+.modal-window:target {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-window>div {
+  width: 400px;
+  position: relative;
+  margin: 10% auto;
+  padding: 40px;
+  background: #fff;
+  color: #444;
+}
+
+.modal-header {
+  font-weight: bold;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.modal-button {
+  margin-top: 20px;
+}
+
+.reconnect-button {
+  text-decoration: none;
+  background-color: dodgerblue;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+}

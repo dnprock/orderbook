@@ -30,9 +30,12 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
       connected: false,
       spread: 0,
       spreadPercent: 0,
+      inactive: false
     }
 
     this.toggleFeed = this.toggleFeed.bind(this)
+    this.handleVisibilityChange = this.handleVisibilityChange.bind(this)
+    this.handleReconnectClick = this.handleReconnectClick.bind(this)
   }
 
   throttledUpdateBook = throttle((bookData, spread, spreadPercent) => {
@@ -85,9 +88,13 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
     }
     this.client.onclose = () => {
       console.log('onclose')
-      setTimeout(function() {
-        //self.setupClient()
-      }, ReconnectWait)
+      // only attempt to reconnect if the state is inactive
+      const self = this
+      if (!this.state.inactive) {
+        setTimeout(function() {
+          self.setupClient()
+        }, ReconnectWait)
+      }
     }
   }
 
@@ -126,14 +133,43 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
     this.throttledUpdateBook(bookData, sp.spread, sp.spreadPercent)
   }
 
+  handleVisibilityChange() {
+    if (document.hidden) {
+      this.throttledUpdateBook.cancel()
+      this.client && this.client.close()
+      this.setState({
+        inactive: true
+      })
+    }
+  }
+
+  handleReconnectClick(e: React.MouseEvent<HTMLAnchorElement>) {
+    this.setState({
+      inactive: false
+    })
+    this.setupClient()
+    e.preventDefault()
+    return false
+  }
+
+  addVisibilityListener() {
+    document.addEventListener("visibilitychange", this.handleVisibilityChange)
+  }
+
+  removeVisibilityListener() {
+    document.removeEventListener("visibilitychange", this.handleVisibilityChange)
+  }
+
   componentDidMount() {
     this.setupClient()
+    this.addVisibilityListener()
   }
 
   componentWillUnmount() {
     // cancel any throttledUpdate call
     this.throttledUpdateBook.cancel()
     this.client && this.client.close()
+    this.removeVisibilityListener()
   }
 
   spreadText() {
@@ -177,6 +213,16 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
         </div>
         <div className='orderbook-bottom'>
           <button className='feed-toggle' onClick={this.toggleFeed}>Toggle Feed</button>
+        </div>
+        <div id="open-modal" className="modal-window" style={{display: this.state.inactive ? "inline" : "none"}}>
+          <div>
+            <div className='modal-header'>Disconnected</div>
+            <div>Order Book was disconnected due to inactivity. Click Reconnect to resume feed.</div>
+            <div className='modal-button'>
+              <a href="#modal-reconnect" title="Reconnect" className="modal-reconnect reconnect-button"
+                onClick={this.handleReconnectClick}>Reconnect</a>
+            </div>
+          </div>
         </div>
       </div>
     )

@@ -26,6 +26,7 @@ export interface OrderBookState {
   spreadPercent: number
   dataError: string
   connected: boolean
+  inactive: boolean
 }
 
 export interface FeedResponse {
