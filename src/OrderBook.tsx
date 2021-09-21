@@ -1,10 +1,10 @@
 import React from 'react'
 import './OrderBook.css'
-import { FeedResponse, IDataHash, OrderBookProps, OrderBookState } from './interfaces'
+import { BookData, FeedResponse, IDataHash, OrderBookProps, OrderBookState } from './interfaces'
 import { IMessageEvent, w3cwebsocket as W3CWebSocket } from 'websocket'
 import OrderList from './OrderList'
 import { UIMessages, BookDataConstants } from './Constants'
-import { convertBookDataToHash, formatPrice } from './utilities'
+import { calculateSpread, convertBookDataToHash, formatPrice } from './utilities'
 import throttle from 'lodash/throttle'
 
 const subMessage = '{"event":"subscribe","feed":"book_ui_1","product_ids":["PI_XBTUSD"]}'
@@ -52,11 +52,15 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
         }
 
         if (messageData.feed === BookDataConstants.SnapshotFeed) {
+          const bd = {
+            buy: convertBookDataToHash(messageData.bids),
+            sell: convertBookDataToHash(messageData.asks)
+          }
+          const sp = calculateSpread(bd)
           this.setState({
-            bookData: {
-              buy: convertBookDataToHash(messageData.bids),
-              sell: convertBookDataToHash(messageData.asks)
-            }
+            bookData: bd,
+            spread: sp.spread,
+            spreadPercent: sp.spreadPercent
           })
         } else if (messageData.feed === BookDataConstants.UpdateFeed
             && !messageData.event) {
@@ -95,21 +99,6 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
     }
   }
 
-  calculateSpread() {
-    let bookData = this.state.bookData
-    if (bookData) {
-      const bids = Object.keys(bookData.buy).sort()
-      const asks = Object.keys(bookData.sell).sort()
-      // spread = (lowest ask - highest big) / midpoint * 100
-      const avg = (+asks[0] + +bids[bids.length - 1]) / 2
-      const spread = (+asks[0] - +bids[bids.length - 1])
-      const percent = Math.round((+asks[0] - +bids[bids.length - 1]) / avg * 100 * 100) / 100
-      return {spread: spread, spreadPercent: percent}
-    } else {
-      return {spread: 0, spreadPercent: 0}
-    }
-  }
-
   updateFeed(messageData: FeedResponse) {
     let bookData = this.state.bookData
     messageData.bids.forEach((pricePoint) => {
@@ -122,7 +111,7 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
         this.updateBook(bookData.sell, pricePoint)
       }
     })
-    const sp = this.calculateSpread()
+    const sp = calculateSpread(this.state.bookData)
     this.throttledUpdateBook(bookData, sp.spread, sp.spreadPercent)
   }
 

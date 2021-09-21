@@ -2,7 +2,7 @@ import OrderBook from './OrderBook'
 import { mount, shallow } from 'enzyme'
 import Enzyme from 'enzyme'
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17'
-import { convertBookDataToHash } from './utilities'
+import { calculateSpread, convertBookDataToHash } from './utilities'
 import snapshotJson from './tests/msg_snapshot.json'
 import snapshot2Json from './tests/msg_2_snapshot.json'
 import feed2Json1 from './tests/msg_2_feed_1.json'
@@ -37,29 +37,39 @@ test('not renders Loading if connected', () => {
 
 test('renders snapshot', () => {
   let wrapper = mount(<OrderBook />)
+  const bd = {
+    buy: convertBookDataToHash(snapshotJson['bids'] as [number, number][]),
+    sell: convertBookDataToHash(snapshotJson['asks'] as [number, number][])
+  }
+  const sp = calculateSpread(bd)
   wrapper.instance().setState({
     connected: true,
-    bookData: {
-      buy: convertBookDataToHash(snapshotJson['bids'] as [number, number][]),
-      sell: convertBookDataToHash(snapshotJson['asks'] as [number, number][])
-    }
+    bookData: bd,
+    spread: sp.spread,
+    spreadPercent: sp.spreadPercent
   })
   expect(wrapper.text()).toContain('47,239.50') // check price
   expect(wrapper.html()).toContain('326,444') // check total
+  expect(wrapper.html()).toContain('Spread 0.50 (0%)') // check spread
 })
 
 test('renders snapshot and feed updates', () => {
   let wrapper = shallow(<OrderBook />)
   let instance = wrapper.instance() as OrderBook
+  const bd = {
+    buy: convertBookDataToHash(snapshot2Json['bids'] as [number, number][]),
+    sell: convertBookDataToHash(snapshot2Json['asks'] as [number, number][])
+  }
+  const sp = calculateSpread(bd)
   instance.setState({
     connected: true,
-    bookData: {
-      buy: convertBookDataToHash(snapshot2Json['bids'] as [number, number][]),
-      sell: convertBookDataToHash(snapshot2Json['asks'] as [number, number][])
-    }
+    bookData: bd,
+    spread: sp.spread,
+    spreadPercent: sp.spreadPercent
   })
   expect(wrapper.html()).toContain('420,584') // check total, buy side
   expect(wrapper.html()).toContain('445,372') // check total, sell side
+  expect(wrapper.html()).toContain('Spread 8.00 (0.02%)') // check spread
   // update order book with feed 1
   instance.updateFeed(feed2Json1 as FeedResponse)
   expect(wrapper.html()).toContain('925,647') // check total, buy side

@@ -1,4 +1,4 @@
-import { IDataHash } from "./interfaces"
+import { BookData, IDataHash } from "./interfaces"
 import { format } from 'd3-format'
 
 export const convertBookDataToHash = (dataPoints: [number, number][]) => {
@@ -15,4 +15,18 @@ export const formatPrice = (p: string) => {
 
 export const formatNumber = (n: number) => {
   return format(',')(n)
+}
+
+export const calculateSpread = (bookData: BookData | null) => {
+  if (bookData) {
+    const bids = Object.keys(bookData.buy).sort()
+    const asks = Object.keys(bookData.sell).sort()
+    // spread = (lowest ask - highest big) / midpoint * 100
+    const avg = (+asks[0] + +bids[bids.length - 1]) / 2
+    const spread = (+asks[0] - +bids[bids.length - 1])
+    const percent = Math.round((+asks[0] - +bids[bids.length - 1]) / avg * 100 * 100) / 100
+    return {spread: spread, spreadPercent: percent}
+  } else {
+    return {spread: 0, spreadPercent: 0}
+  }
 }
