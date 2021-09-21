@@ -1,6 +1,6 @@
 import React from 'react'
 import './OrderBook.css'
-import { BookData, FeedResponse, IDataHash, OrderBookProps, OrderBookState } from './interfaces'
+import { FeedResponse, IDataHash, OrderBookProps, OrderBookState } from './interfaces'
 import { IMessageEvent, w3cwebsocket as W3CWebSocket } from 'websocket'
 import OrderList from './OrderList'
 import { UIMessages, BookDataConstants } from './Constants'
@@ -132,7 +132,7 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
 
   render() {
     return (
-      <div>
+      <div className="container">
         <div className='orderbook-header'>
           <div className="orderbook-header-left"><b>Order Book</b></div>
           <div className="orderbook-header-center">{this.spreadText()}</div>
@@ -147,6 +147,9 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
               <OrderList pricePoints={this.state.bookData.sell} listType={'sell'} />
             </div>
           }
+        </div>
+        <div className='orderbook-bottom'>
+          <button className='feed-toggle'>Toggle Feed</button>
         </div>
       </div>
     )

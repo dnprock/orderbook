@@ -1,6 +1,11 @@
+.container {
+  height: 100%;
+}
+
 .orderbook {
   margin: 0 auto;
   width: 95%;
+  height: calc(100% - 100px);
 }
 
 .orderbook-status {
@@ -47,11 +52,13 @@
 .lists {
   width: 100%;
   float: left;
+  height: 100%;
 }
 
 .order-list {
   padding: 0px;
   font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
+  height: 100%;
 }
 
 .order-list-container {
@@ -92,3 +99,18 @@
 
 .order-col-1 { width: 33% }
 .order-col-2 { width: 34% }
+
+.orderbook-bottom {
+  margin: 10px;
+}
+
+.feed-toggle {
+  height: 30px;
+  font-size: 16px;
+  padding: 0px 20px;
+  background-color:darkslateblue;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
