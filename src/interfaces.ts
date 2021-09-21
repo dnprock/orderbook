@@ -31,3 +31,11 @@ export interface FeedResponse {
   bids: [number, number][] | []
   asks: [number, number][] | []
 }
+
+export interface OrderListBarProps {
+  prices: string[]
+  pricePoints: IDataHash
+  width: number
+  height: number
+  color: string
+}

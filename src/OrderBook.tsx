@@ -214,12 +214,12 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
         <div className='orderbook-bottom'>
           <button className='feed-toggle' onClick={this.toggleFeed}>Toggle Feed</button>
         </div>
-        <div id="open-modal" className="modal-window" style={{display: this.state.inactive ? "inline" : "none"}}>
+        <div id='open-modal' className='modal-window' style={{display: this.state.inactive ? 'inline' : 'none'}}>
           <div>
             <div className='modal-header'>Disconnected</div>
             <div>Order Book was disconnected due to inactivity. Click Reconnect to resume feed.</div>
             <div className='modal-button'>
-              <a href="#modal-reconnect" title="Reconnect" className="modal-reconnect reconnect-button"
+              <a href='#modal-reconnect' title='Reconnect' className='modal-reconnect reconnect-button'
                 onClick={this.handleReconnectClick}>Reconnect</a>
             </div>
           </div>

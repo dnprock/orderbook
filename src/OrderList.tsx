@@ -1,12 +1,25 @@
 import { OrderListProps } from './interfaces'
+import OrderListBar from './OrderListBar'
 import { formatNumber, formatPrice } from './utilities'
 
 const OrderList = (props: OrderListProps) => {
+  const height = () => {
+    return window.innerHeight - 100 - 26 // subtract page headers and footers and list headers
+  }
+
+  const width = () => {
+    return window.innerWidth / 2
+  }
+
   const trimPricesForScreen = (prices: string[]) => {
     const rowHeight = 26
-    const orderListHeight = window.innerHeight - 100 - 36 // subtract page headers and footers and list headers
+    const orderListHeight = height()
     const numRows = orderListHeight / rowHeight
     return prices.slice(0, numRows)
+  }
+
+  const listColor = () => {
+    return props.listType === 'buy' ? 'limegreen' : 'red'
   }
 
   let total = 0
@@ -38,31 +51,37 @@ const OrderList = (props: OrderListProps) => {
             </div>
           }
         </div>
-        {prices.map((price, index) => {
-          total += props.pricePoints[price]
-          const divTotal = <div key={'price-total-' + index} className='order-col-1 order-total'>{formatNumber(total)}</div>
-          const divSize = <div key={'price-size-' + index} className='order-col-1 order-size'>{formatNumber(props.pricePoints[price])}</div>
-          const divPrice = <div key={'price-point-' + index}
-            className='order-col-2 order-price'
-            style={{color: props.listType === 'buy' ? 'limegreen' : 'red'}} >{formatPrice(price)}</div>
-          if (props.listType === 'buy') {
-            return (
-              <div key={'price-row-' + index} className='price-row'>
-                {divTotal}
-                {divSize}
-                {divPrice}
-              </div>
-            )
-          } else {
-            return (
-              <div key={'price-row-' + index} className='price-row'>
-                {divPrice}
-                {divSize}
-                {divTotal}
-              </div>
-            )
-          }
-        })}
+        <div className='price-table'>
+          <div className='price-rows'>
+            {prices.map((price, index) => {
+              total += props.pricePoints[price]
+              const divTotal = <div key={'price-total-' + index} className='order-col-1 order-total'>{formatNumber(total)}</div>
+              const divSize = <div key={'price-size-' + index} className='order-col-1 order-size'>{formatNumber(props.pricePoints[price])}</div>
+              const divPrice = <div key={'price-point-' + index}
+                className='order-col-2 order-price'
+                style={{color: listColor()}} >{formatPrice(price)}</div>
+              if (props.listType === 'buy') {
+                return (
+                  <div key={'price-row-' + index} className='price-row'>
+                    {divTotal}
+                    {divSize}
+                    {divPrice}
+                  </div>
+                )
+              } else {
+                return (
+                  <div key={'price-row-' + index} className='price-row'>
+                    {divPrice}
+                    {divSize}
+                    {divTotal}
+                  </div>
+                )
+              }
+            })}
+          </div>
+          <OrderListBar prices={prices} pricePoints={props.pricePoints}
+            width={width()} height={26 * prices.length} color={listColor()}/>
+        </div>
       </div>
     </div>
   )
