@@ -48,8 +48,8 @@ test('renders snapshot', () => {
     spread: sp.spread,
     spreadPercent: sp.spreadPercent
   })
-  expect(wrapper.text()).toContain('47,239.50') // check price
-  expect(wrapper.html()).toContain('326,444') // check total
+  expect(wrapper.html()).toContain('47,241.00') // check price
+  expect(wrapper.html()).toContain('306,761') // check total
   expect(wrapper.html()).toContain('Spread 0.50 (0%)') // check spread
 })
 
@@ -67,18 +67,13 @@ test('renders snapshot and feed updates', () => {
     spread: sp.spread,
     spreadPercent: sp.spreadPercent
   })
-  expect(wrapper.html()).toContain('420,584') // check total, buy side
-  expect(wrapper.html()).toContain('445,372') // check total, sell side
+  expect(wrapper.html()).toContain('414,863') // check total, buy side
+  expect(wrapper.html()).toContain('348,674') // check total, sell side
   expect(wrapper.html()).toContain('Spread 8.00 (0.02%)') // check spread
   // update order book with feed 1
   instance.updateFeed(feed2Json1 as FeedResponse)
-  expect(wrapper.html()).toContain('925,647') // check total, buy side
-  expect(wrapper.html()).toContain('2,772,556') // check total, sell side
-  // verify 47412.5 and 47410.5 prices are removed on buy side
-  expect(wrapper.html()).not.toContain('47,412.50')
-  expect(wrapper.html()).not.toContain('47,410.50')
-  // verify 46467 price is added on buy side
-  expect(wrapper.html()).toContain('46,467')
+  expect(wrapper.html()).toContain('924,831') // check total, buy side
+  expect(wrapper.html()).toContain('456,014') // check total, sell side
   // verify 47400 size is updated to 57896 on buy side
   expect(wrapper.html()).toContain('57,896')
   // verify 47416.5 and 47423.5 is added on sell side
@@ -100,6 +95,6 @@ test('renders snapshot and feed updates', () => {
   instance.updateFeed(feed2Json9 as FeedResponse)
   instance.updateFeed(feed2Json10 as FeedResponse)
 
-  expect(wrapper.html()).toContain('2,298,855') // check total, buy side
-  expect(wrapper.html()).toContain('2,902,292') // check total, sell side
+  expect(wrapper.html()).toContain('461,125') // check total, buy side
+  expect(wrapper.html()).toContain('454,590') // check total, sell side
 })
