@@ -7,11 +7,6 @@ export interface OrderListProps {
   listType: 'buy' | 'sell'
 }
 
-export interface OrderListState {
-  scrollPosition: number,
-  pricePoints: IDataHash
-}
-
 export interface IDataHash {
   [price: string]: number
 }
