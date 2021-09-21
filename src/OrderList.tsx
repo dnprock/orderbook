@@ -12,6 +12,13 @@ class OrderList extends React.Component<OrderListProps, OrderListState> {
     }
   }
 
+  trimPricesForScreen(prices: string[]) {
+    const rowHeight = 26
+    const orderListHeight = window.innerHeight - 100 - 36 // subtract page headers and footers and list headers
+    const numRows = orderListHeight / rowHeight
+    return prices.slice(0, numRows)
+  }
+
   render() {
     let total = 0
     let prices = Object.keys(this.props.pricePoints)
@@ -22,6 +29,7 @@ class OrderList extends React.Component<OrderListProps, OrderListState> {
       // buy side, highest price first
       prices.sort().reverse()
     }
+    prices = this.trimPricesForScreen(prices)
     return (
       <div className='order-list col-1'>
         <div className='order-list-container'>
