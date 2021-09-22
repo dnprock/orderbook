@@ -80,7 +80,8 @@ const OrderList = (props: OrderListProps) => {
             })}
           </div>
           <OrderListBar prices={prices} pricePoints={props.pricePoints}
-            width={width()} height={26 * prices.length} color={listColor()}/>
+            width={width()} height={26 * prices.length}
+            color={listColor()} orientation={props.listType === 'buy' ? 'right' : 'left'}/>
         </div>
       </div>
     </div>

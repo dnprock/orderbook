@@ -1,9 +1,19 @@
-import { OrderListBarProps } from "./interfaces"
+import { OrderListBarProps } from './interfaces'
+import { scaleLinear } from 'd3-scale'
 
 const OrderListBar = (props: OrderListBarProps) => {
-  console.log(props)
-
   const barHeight = 26 // height for each bar
+  let barData: [string, number][] = []
+  let total = 0
+  props.prices.forEach((p) => {
+    total += props.pricePoints[p]
+    barData.push([p, total])
+  })
+  const max = Math.max(...barData.map((d) => { return d[1]}))
+
+  const xScale = scaleLinear()
+              .range([0, props.width])
+              .domain([0, max])
 
   return (
     <div className='orderlist-bar-chart'>
@@ -12,7 +22,7 @@ const OrderListBar = (props: OrderListBarProps) => {
           return <rect key={'bar-' + index} style={{fill: props.color, opacity: 0.4}}
                         x={0}
                         y={barHeight * index}
-                        width={200}
+                        width={xScale(barData[index][1])}
                         height={barHeight - 1}
                 />
         })}

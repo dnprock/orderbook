@@ -38,4 +38,5 @@ export interface OrderListBarProps {
   width: number
   height: number
   color: string
+  orientation: string
 }

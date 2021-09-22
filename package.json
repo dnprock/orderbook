@@ -7,6 +7,7 @@
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
     "@types/d3-format": "^3.0.1",
+    "@types/d3-scale": "^4.0.1",
     "@types/jest": "^26.0.15",
     "@types/lodash": "^4.14.173",
     "@types/node": "^12.0.0",
@@ -14,6 +15,7 @@
     "@types/react-dom": "^17.0.0",
     "@types/websocket": "^1.0.4",
     "d3-format": "^3.0.1",
+    "d3-scale": "^4.0.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-scripts": "4.0.3",
@@ -52,6 +54,7 @@
   },
   "jest": {
     "transformIgnorePatterns": [
+      "node_modules/(?!(d3-scale)/)",
       "node_modules/(?!(d3-format)/)"
     ]
   }
