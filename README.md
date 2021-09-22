@@ -1,4 +1,4 @@
-![Travis CI](https://app.travis-ci.com/dnprock/orderbook.svg?branch=main)
+[![Build Status](https://app.travis-ci.com/dnprock/orderbook.svg?branch=main)](https://app.travis-ci.com/dnprock/orderbook)
 
 # Orderbook App
 
