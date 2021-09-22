@@ -54,8 +54,7 @@
   },
   "jest": {
     "transformIgnorePatterns": [
-      "node_modules/(?!(d3-scale)/)",
-      "node_modules/(?!(d3-format)/)"
+      "node_modules/(?!(d3-format|d3-scale|d3-array|internmap|d3-interpolate|d3-color|d3-time|d3-time-format)/)"
     ]
   }
 }
