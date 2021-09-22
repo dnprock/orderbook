@@ -35,13 +35,8 @@ const OrderList = (props: OrderListProps) => {
   let total = 0, totals: number[] = []
   let prices = Object.keys(props.pricePoints)
   if (props.listType === 'sell') {
-    if (isMobileView()) {
-      // sell side in mobile view, highest price first
-      prices.sort().reverse()
-    } else {
-      // sell side, lowest price first
-      prices.sort()
-    }
+    // sell side, lowest price first
+    prices.sort()
   } else {
     // buy side, highest price first
     prices.sort().reverse()
@@ -49,14 +44,15 @@ const OrderList = (props: OrderListProps) => {
   prices = trimPricesForScreen(prices)
   // calculate totals
   if (props.listType === 'sell' && isMobileView()) {
+    // in sell side mobile view, we reverse price display
+    prices.reverse()
     // calculate totals from bottom up
-    prices.reverse().forEach((p) => {
+    for (let i = prices.length - 1; i >= 0; i--) {
+      const p = prices[i]
       total += props.pricePoints[p]
       totals.push(total)
-    })
-    // reverse back for display
+    }
     totals.reverse()
-    prices.reverse()
   } else {
     prices.forEach((p) => {
       total += props.pricePoints[p]
