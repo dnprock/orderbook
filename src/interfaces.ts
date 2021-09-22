@@ -40,3 +40,12 @@ export interface OrderListBarProps {
   color: string
   orientation: string
 }
+
+export interface ListRowProps {
+  total: number
+  size: number
+  price: string
+  index: number
+  color: string
+  listType: string
+}

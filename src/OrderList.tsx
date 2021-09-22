@@ -1,6 +1,6 @@
 import { OrderListProps } from './interfaces'
+import ListRow from './ListRow'
 import OrderListBar from './OrderListBar'
-import { formatNumber, formatPrice } from './utilities'
 
 const OrderList = (props: OrderListProps) => {
   const height = () => {
@@ -55,28 +55,11 @@ const OrderList = (props: OrderListProps) => {
           <div className='price-rows'>
             {prices.map((price, index) => {
               total += props.pricePoints[price]
-              const divTotal = <div key={'price-total-' + index} className='order-col-1 order-total'>{formatNumber(total)}</div>
-              const divSize = <div key={'price-size-' + index} className='order-col-1 order-size'>{formatNumber(props.pricePoints[price])}</div>
-              const divPrice = <div key={'price-point-' + index}
-                className='order-col-2 order-price'
-                style={{color: listColor()}} >{formatPrice(price)}</div>
-              if (props.listType === 'buy') {
-                return (
-                  <div key={'price-row-' + index} className='price-row'>
-                    {divTotal}
-                    {divSize}
-                    {divPrice}
-                  </div>
-                )
-              } else {
-                return (
-                  <div key={'price-row-' + index} className='price-row'>
-                    {divPrice}
-                    {divSize}
-                    {divTotal}
-                  </div>
-                )
-              }
+              return <ListRow key={'list-row-' + index} listType={props.listType}
+                        index={index} total={total} price={price}
+                        size={props.pricePoints[price]}
+                        color={listColor()}
+                      />
             })}
           </div>
           <OrderListBar prices={prices} pricePoints={props.pricePoints}
