@@ -13,7 +13,7 @@ const unsubBTCMessage = '{"event":"unsubscribe","feed":"book_ui_1","product_ids"
 const unsubETHMessage = '{"event":"unsubscribe","feed":"book_ui_1","product_ids":["PI_ETHUSD"]}'
 const wsUrl = 'wss://www.cryptofacilities.com/ws/v1'
 const ReconnectWait = 3000
-const RefreshRate = 0.005 // number of times to update every second
+const RefreshRate = 0.5 // number of times to update every second
 class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
   private client: W3CWebSocket | null
   private coin: string

@@ -19,11 +19,11 @@ const OrderListBar = (props: OrderListBarProps) => {
     <div className='orderlist-bar-chart'>
       <svg width={props.width} height={props.height}>
         {props.prices.map((price, index) => {
-          return <rect key={'bar-' + index} style={{fill: props.color, opacity: 0.4}}
-                        x={0}
+          return <rect key={'bar-' + index} style={{fill: props.color, opacity: 0.2}}
+                        x={props.orientation === 'left' ? 0 : (props.width - xScale(barData[index][1]))}
                         y={barHeight * index}
                         width={xScale(barData[index][1])}
-                        height={barHeight - 1}
+                        height={barHeight}
                 />
         })}
       </svg>
