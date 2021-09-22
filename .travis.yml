@@ -4,5 +4,8 @@ node_js:
   - "14"
 
 script:
-    - yarn test
+    - yarn coverage
     - yarn build
+
+after_script: # Upload coverage report to coveralls
+  - COVERALLS_REPO_TOKEN=$coveralls_repo_token yarn coveralls
