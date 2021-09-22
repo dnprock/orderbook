@@ -66,22 +66,20 @@ const OrderList = (props: OrderListProps) => {
   return (
     <div className='order-list col-1' style={{height: isMobileView() ? 'calc(50% - 10px)' : '100%'}}>
       <div className='order-list-container'>
-        <div className='price-row'>
-          {props.listType === 'buy' &&
-            <div className='order-list-header'>
-              <div className='order-col-1'>TOTAL</div>
-              <div className='order-col-1'>SIZE</div>
-              <div className='order-col-2'>PRICE</div>
-            </div>
-          }
-          {props.listType === 'sell' &&
-            <div className='order-list-header'>
-              <div className='order-col-2'>PRICE</div>
-              <div className='order-col-1'>SIZE</div>
-              <div className='order-col-1'>TOTAL</div>
-            </div>
-          }
-        </div>
+        {props.listType === 'buy' && !isMobileView() && // don't display buy side header in mobile view
+          <div className='order-list-header'>
+            <div className='order-col-1'>TOTAL</div>
+            <div className='order-col-1'>SIZE</div>
+            <div className='order-col-2'>PRICE</div>
+          </div>
+        }
+        {props.listType === 'sell' &&
+          <div className='order-list-header'>
+            <div className='order-col-2'>PRICE</div>
+            <div className='order-col-1'>SIZE</div>
+            <div className='order-col-1'>TOTAL</div>
+          </div>
+        }
         <div className='price-table'>
           <div className='price-rows'>
             {prices.map((price, index) => {

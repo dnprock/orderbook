@@ -213,7 +213,7 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
           {this.state.connected && this.state.dataError === '' && this.state.bookData && isMobileView() &&
             <div className='lists'>
               <OrderList pricePoints={this.state.bookData.sell} listType={'sell'} />
-              {isMobileView() && <div style={{width: '100%', float: 'left', margin: '5px'}}>{this.spreadText()}</div>}
+              {isMobileView() && <div style={{width: '100%', float: 'left', marginTop: '15px'}}>{this.spreadText()}</div>}
               <OrderList pricePoints={this.state.bookData.buy} listType={'buy'} />
             </div>
           }
