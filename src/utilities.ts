@@ -30,3 +30,7 @@ export const calculateSpread = (bookData: BookData | null) => {
     return {spread: 0, spreadPercent: 0}
   }
 }
+
+export const isMobileView = () => {
+  return window.innerWidth <= 768
+}

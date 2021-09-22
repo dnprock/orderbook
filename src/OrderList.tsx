@@ -1,10 +1,16 @@
 import { OrderListProps } from './interfaces'
 import ListRow from './ListRow'
 import OrderListBar from './OrderListBar'
+import { isMobileView } from './utilities'
 
 const OrderList = (props: OrderListProps) => {
   const height = () => {
-    return window.innerHeight - 100 - 26 // subtract page headers and footers and list headers
+    const screenHeight = window.innerHeight - 100 - 26 // subtract page headers and footers and list headers
+    if (isMobileView()) {
+      return screenHeight / 2 - 26 // subtract a row for spread
+    } else {
+      return screenHeight
+    }
   }
 
   const width = () => {
@@ -33,7 +39,7 @@ const OrderList = (props: OrderListProps) => {
   }
   prices = trimPricesForScreen(prices)
   return (
-    <div className='order-list col-1'>
+    <div className='order-list col-1' style={{height: isMobileView() ? 'calc(50% - 10px)' : '100%'}}>
       <div className='order-list-container'>
         <div className='price-row'>
           {props.listType === 'buy' &&

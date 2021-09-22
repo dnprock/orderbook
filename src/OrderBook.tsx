@@ -4,7 +4,7 @@ import { FeedResponse, IDataHash, OrderBookProps, OrderBookState } from './inter
 import { IMessageEvent, w3cwebsocket as W3CWebSocket } from 'websocket'
 import OrderList from './OrderList'
 import { UIMessages, BookDataConstants } from './Constants'
-import { calculateSpread, convertBookDataToHash, formatPrice } from './utilities'
+import { calculateSpread, convertBookDataToHash, formatPrice, isMobileView } from './utilities'
 import throttle from 'lodash/throttle'
 
 const subBTCMessage = '{"event":"subscribe","feed":"book_ui_1","product_ids":["PI_XBTUSD"]}'
@@ -13,7 +13,7 @@ const unsubBTCMessage = '{"event":"unsubscribe","feed":"book_ui_1","product_ids"
 const unsubETHMessage = '{"event":"unsubscribe","feed":"book_ui_1","product_ids":["PI_ETHUSD"]}'
 const wsUrl = 'wss://www.cryptofacilities.com/ws/v1'
 const ReconnectWait = 3000
-const RefreshRate = 0.5 // number of times to update every second
+const RefreshRate = 0.005 // number of times to update every second
 class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
   private client: W3CWebSocket | null
   private coin: string
@@ -198,22 +198,32 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
       <div className="container">
         <div className='orderbook-header'>
           <div className="orderbook-header-left"><b>Order Book</b></div>
-          <div className="orderbook-header-center">{this.spreadText()}</div>
+          <div className="orderbook-header-center">{!isMobileView() ? this.spreadText() : '\u00A0'}</div>
           <div className="orderbook-header-right">{this.coin === 'btc' ? 'BTCUSD' : 'ETHUSD'}</div>
         </div>
         <div className='orderbook'>
           {!this.state.connected && <div className='orderbook-loading orderbook-status'>{UIMessages.Loading}</div>}
           {this.state.dataError !== '' && <div className='orderbook-error orderbook-status'>{UIMessages.ErrorDataParse}</div>}
-          {this.state.connected && this.state.dataError === '' && this.state.bookData &&
+          {this.state.connected && this.state.dataError === '' && this.state.bookData && !isMobileView() &&
             <div className='lists'>
               <OrderList pricePoints={this.state.bookData.buy} listType={'buy'} />
               <OrderList pricePoints={this.state.bookData.sell} listType={'sell'} />
             </div>
           }
+          {this.state.connected && this.state.dataError === '' && this.state.bookData && isMobileView() &&
+            <div className='lists'>
+              <OrderList pricePoints={this.state.bookData.sell} listType={'sell'} />
+              {isMobileView() && <div style={{width: '100%', float: 'left', margin: '5px'}}>{this.spreadText()}</div>}
+              <OrderList pricePoints={this.state.bookData.buy} listType={'buy'} />
+            </div>
+          }
         </div>
-        <div className='orderbook-bottom'>
-          <button className='feed-toggle' onClick={this.toggleFeed}>Toggle Feed</button>
-        </div>
+        {!isMobileView() &&
+          <div className='orderbook-bottom'>
+            <button className='feed-toggle' onClick={this.toggleFeed}>Toggle Feed</button>
+          </div>
+        }
+        {isMobileView() && <div className='orderbook-bottom'><button className='feed-toggle' onClick={this.toggleFeed}>Toggle Feed</button></div>}
         <div id='open-modal' className='modal-window' style={{display: this.state.inactive ? 'inline' : 'none'}}>
           <div>
             <div className='modal-header'>Disconnected</div>
