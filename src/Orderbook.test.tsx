@@ -48,7 +48,7 @@ test('renders snapshot', () => {
     spread: sp.spread,
     spreadPercent: sp.spreadPercent
   })
-  expect(wrapper.html()).toContain('47,241.00') // check price
+  expect(wrapper.html()).toContain('47,240.00') // check price
   expect(wrapper.html()).toContain('306,761') // check total
   expect(wrapper.html()).toContain('Spread 0.50 (0%)') // check spread
 })
