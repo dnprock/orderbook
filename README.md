@@ -1,3 +1,5 @@
+![Travis CI](https://app.travis-ci.com/dnprock/orderbook.svg?branch=main)
+
 # Orderbook App
 
 Deployed application: https://orderbook-mu.vercel.app/
