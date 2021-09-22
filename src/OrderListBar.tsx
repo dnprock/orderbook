@@ -3,13 +3,7 @@ import { scaleLinear } from 'd3-scale'
 
 const OrderListBar = (props: OrderListBarProps) => {
   const barHeight = 26 // height for each bar
-  let barData: [string, number][] = []
-  let total = 0
-  props.prices.forEach((p) => {
-    total += props.pricePoints[p]
-    barData.push([p, total])
-  })
-  const max = Math.max(...barData.map((d) => { return d[1]}))
+  const max = Math.max(...props.totals.map((d) => { return d}))
 
   const xScale = scaleLinear()
               .range([0, props.width])
@@ -18,11 +12,11 @@ const OrderListBar = (props: OrderListBarProps) => {
   return (
     <div className='orderlist-bar-chart'>
       <svg width={props.width} height={props.height}>
-        {props.prices.map((price, index) => {
+        {props.totals.map((total, index) => {
           return <rect key={'bar-' + index} style={{fill: props.color, opacity: 0.2}}
-                        x={props.orientation === 'left' ? 0 : (props.width - xScale(barData[index][1]))}
+                        x={props.orientation === 'left' ? 0 : (props.width - xScale(total))}
                         y={barHeight * index}
-                        width={xScale(barData[index][1])}
+                        width={xScale(total)}
                         height={barHeight}
                 />
         })}

@@ -33,12 +33,11 @@ export interface FeedResponse {
 }
 
 export interface OrderListBarProps {
-  prices: string[]
-  pricePoints: IDataHash
   width: number
   height: number
   color: string
   orientation: string
+  totals: number[]
 }
 
 export interface ListRowProps {

@@ -14,7 +14,11 @@ const OrderList = (props: OrderListProps) => {
   }
 
   const width = () => {
-    return window.innerWidth / 2
+    if (isMobileView()) {
+      return window.innerWidth
+    } else {
+      return window.innerWidth / 2
+    }
   }
 
   const trimPricesForScreen = (prices: string[]) => {
@@ -28,16 +32,37 @@ const OrderList = (props: OrderListProps) => {
     return props.listType === 'buy' ? 'limegreen' : 'red'
   }
 
-  let total = 0
+  let total = 0, totals: number[] = []
   let prices = Object.keys(props.pricePoints)
   if (props.listType === 'sell') {
-    // sell side, lowest price first
-    prices.sort()
+    if (isMobileView()) {
+      // sell side in mobile view, highest price first
+      prices.sort().reverse()
+    } else {
+      // sell side, lowest price first
+      prices.sort()
+    }
   } else {
     // buy side, highest price first
     prices.sort().reverse()
   }
   prices = trimPricesForScreen(prices)
+  // calculate totals
+  if (props.listType === 'sell' && isMobileView()) {
+    // calculate totals from bottom up
+    prices.reverse().forEach((p) => {
+      total += props.pricePoints[p]
+      totals.push(total)
+    })
+    // reverse back for display
+    totals.reverse()
+    prices.reverse()
+  } else {
+    prices.forEach((p) => {
+      total += props.pricePoints[p]
+      totals.push(total)
+    })
+  }
   return (
     <div className='order-list col-1' style={{height: isMobileView() ? 'calc(50% - 10px)' : '100%'}}>
       <div className='order-list-container'>
@@ -60,17 +85,18 @@ const OrderList = (props: OrderListProps) => {
         <div className='price-table'>
           <div className='price-rows'>
             {prices.map((price, index) => {
-              total += props.pricePoints[price]
               return <ListRow key={'list-row-' + index} listType={props.listType}
-                        index={index} total={total} price={price}
+                        index={index} total={totals[index]} price={price}
                         size={props.pricePoints[price]}
                         color={listColor()}
                       />
             })}
           </div>
-          <OrderListBar prices={prices} pricePoints={props.pricePoints}
-            width={width()} height={26 * prices.length}
-            color={listColor()} orientation={props.listType === 'buy' ? 'right' : 'left'}/>
+          <OrderListBar
+            width={width()} height={26 * prices.length} totals={totals}
+            color={listColor()}
+            orientation={
+              props.listType === 'sell' ? 'left' : (isMobileView() ? 'left' : 'right')}/>
         </div>
       </div>
     </div>
