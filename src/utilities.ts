@@ -34,3 +34,59 @@ export const calculateSpread = (bookData: BookData | null) => {
 export const isMobileView = () => {
   return window.innerWidth <= 768
 }
+
+export const height = () => {
+  const screenHeight = window.innerHeight - 100 - 26 // subtract page headers and footers and list headers
+  if (isMobileView()) {
+    return screenHeight / 2 - 26 // subtract a row for spread
+  } else {
+    return screenHeight
+  }
+}
+
+export const width = () => {
+  if (isMobileView()) {
+    return window.innerWidth
+  } else {
+    return window.innerWidth / 2
+  }
+}
+
+export const trimPricesForScreen = (prices: string[]) => {
+  const rowHeight = 26
+  const orderListHeight = height()
+  const numRows = orderListHeight / rowHeight
+  return prices.slice(0, numRows)
+}
+
+export const calculatePricesAndTotals = (pricePoints: IDataHash, listType: string) => {
+  let total = 0, totals: number[] = []
+  let prices = Object.keys(pricePoints)
+  if (listType === 'sell') {
+    // sell side, lowest price first
+    prices.sort()
+  } else {
+    // buy side, highest price first
+    prices.sort().reverse()
+  }
+  prices = trimPricesForScreen(prices)
+  // calculate totals
+  if (listType === 'sell' && isMobileView()) {
+    // in sell side mobile view, we reverse price display
+    prices.reverse()
+    // calculate totals from bottom up
+    for (let i = prices.length - 1; i >= 0; i--) {
+      const p = prices[i]
+      total += pricePoints[p]
+      totals.push(total)
+    }
+    totals.reverse()
+  } else {
+    prices.forEach((p) => {
+      total += pricePoints[p]
+      totals.push(total)
+    })
+  }
+
+  return {prices: prices, totals: totals}
+}
