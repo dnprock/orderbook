@@ -1,5 +1,6 @@
 import { BookData, IDataHash } from "./interfaces"
 import { format } from 'd3-format'
+import { RowHeight } from "./Constants"
 
 export const convertBookDataToHash = (dataPoints: [number, number][]) => {
   let hash: IDataHash = {}
@@ -36,9 +37,9 @@ export const isMobileView = () => {
 }
 
 export const height = () => {
-  const screenHeight = window.innerHeight - 100 - 26 // subtract page headers and footers and list headers
+  const screenHeight = window.innerHeight - 100 - RowHeight // subtract page headers and footers and list headers
   if (isMobileView()) {
-    return screenHeight / 2 - 26 // subtract a row for spread
+    return screenHeight / 2 - RowHeight // subtract a row for spread
   } else {
     return screenHeight
   }
@@ -53,9 +54,8 @@ export const width = () => {
 }
 
 export const trimPricesForScreen = (prices: string[]) => {
-  const rowHeight = 26
   const orderListHeight = height()
-  const numRows = orderListHeight / rowHeight
+  const numRows = orderListHeight / RowHeight
   return prices.slice(0, numRows)
 }
 

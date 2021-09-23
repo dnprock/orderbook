@@ -1,8 +1,9 @@
 import { OrderListBarProps } from './interfaces'
 import { scaleLinear } from 'd3-scale'
+import { RowHeight } from './Constants'
 
 const OrderListBar = (props: OrderListBarProps) => {
-  const barHeight = 26 // height for each bar
+  const barHeight = RowHeight // height for each bar
 
   const xScale = scaleLinear()
               .range([0, props.width])

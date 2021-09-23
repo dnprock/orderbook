@@ -8,3 +8,5 @@ export const BookDataConstants = {
   SnapshotFeed: 'book_ui_1_snapshot',
   UpdateFeed: 'book_ui_1'
 }
+
+export const RowHeight = 26
