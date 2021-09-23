@@ -71,7 +71,7 @@ test('renders snapshot and feed updates', () => {
   expect(wrapper.html()).toContain('348,674') // check total, sell side
   expect(wrapper.html()).toContain('Spread 8.00 (0.02%)') // check spread
   // update order book with feed 1
-  instance.updateFeed(feed2Json1 as FeedResponse)
+  instance.updateFeed(feed2Json1 as FeedResponse, false)
   expect(wrapper.html()).toContain('924,831') // check total, buy side
   expect(wrapper.html()).toContain('456,014') // check total, sell side
   // verify 47400 size is updated to 57896 on buy side
@@ -85,15 +85,15 @@ test('renders snapshot and feed updates', () => {
   expect(wrapper.html()).toContain('16,200')
 
   // update order book with the rest of the feeds
-  instance.updateFeed(feed2Json2 as FeedResponse)
-  instance.updateFeed(feed2Json3 as FeedResponse)
-  instance.updateFeed(feed2Json4 as FeedResponse)
-  instance.updateFeed(feed2Json5 as FeedResponse)
-  instance.updateFeed(feed2Json6 as FeedResponse)
-  instance.updateFeed(feed2Json7 as FeedResponse)
-  instance.updateFeed(feed2Json8 as FeedResponse)
-  instance.updateFeed(feed2Json9 as FeedResponse)
-  instance.updateFeed(feed2Json10 as FeedResponse)
+  instance.updateFeed(feed2Json2 as FeedResponse, false)
+  instance.updateFeed(feed2Json3 as FeedResponse, false)
+  instance.updateFeed(feed2Json4 as FeedResponse, false)
+  instance.updateFeed(feed2Json5 as FeedResponse, false)
+  instance.updateFeed(feed2Json6 as FeedResponse, false)
+  instance.updateFeed(feed2Json7 as FeedResponse, false)
+  instance.updateFeed(feed2Json8 as FeedResponse, false)
+  instance.updateFeed(feed2Json9 as FeedResponse, false)
+  instance.updateFeed(feed2Json10 as FeedResponse, false)
 
   expect(wrapper.html()).toContain('461,125') // check total, buy side
   expect(wrapper.html()).toContain('454,590') // check total, sell side

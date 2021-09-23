@@ -5,6 +5,8 @@ export interface OrderBookProps {
 export interface OrderListProps {
   pricePoints: IDataHash
   listType: 'buy' | 'sell'
+  prices: string[]
+  totals: number[]
 }
 
 export interface IDataHash {

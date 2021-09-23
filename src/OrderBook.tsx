@@ -1,10 +1,10 @@
 import React from 'react'
 import './OrderBook.css'
-import { FeedResponse, IDataHash, OrderBookProps, OrderBookState } from './interfaces'
+import { BookData, FeedResponse, IDataHash, OrderBookProps, OrderBookState } from './interfaces'
 import { IMessageEvent, w3cwebsocket as W3CWebSocket } from 'websocket'
 import OrderList from './OrderList'
 import { UIMessages, BookDataConstants } from './Constants'
-import { calculateSpread, convertBookDataToHash, formatPrice, isMobileView } from './utilities'
+import { calculatePricesAndTotals, calculateSpread, convertBookDataToHash, formatPrice, isMobileView } from './utilities'
 import throttle from 'lodash/throttle'
 
 const subBTCMessage = '{"event":"subscribe","feed":"book_ui_1","product_ids":["PI_XBTUSD"]}'
@@ -38,12 +38,16 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
     this.handleReconnectClick = this.handleReconnectClick.bind(this)
   }
 
-  throttledUpdateBook = throttle((bookData, spread, spreadPercent) => {
+  updateBookState(bookData: BookData | null, spread: number, spreadPercent: number) {
     this.setState({
       bookData: bookData,
       spread: spread,
       spreadPercent: spreadPercent
     })
+  }
+
+  throttledUpdateBook = throttle((bookData: BookData | null, spread: number, spreadPercent: number) => {
+    this.updateBookState(bookData, spread, spreadPercent)
   }, 1000 / RefreshRate)
 
   setupClient() {
@@ -78,7 +82,7 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
           })
         } else if (messageData.feed === BookDataConstants.UpdateFeed
             && !messageData.event) {
-          this.updateFeed(messageData)
+          this.updateFeed(messageData, true)
         }
       } catch (e) {
         this.setState({
@@ -117,7 +121,7 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
     }
   }
 
-  updateFeed(messageData: FeedResponse) {
+  updateFeed(messageData: FeedResponse, throttled: boolean) {
     let bookData = this.state.bookData
     messageData.bids.forEach((pricePoint) => {
       if (bookData) {
@@ -130,7 +134,11 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
       }
     })
     const sp = calculateSpread(this.state.bookData)
-    this.throttledUpdateBook(bookData, sp.spread, sp.spreadPercent)
+    if (throttled) {
+      this.throttledUpdateBook(bookData, sp.spread, sp.spreadPercent)
+    } else {
+      this.updateBookState(bookData, sp.spread, sp.spreadPercent)
+    }
   }
 
   handleVisibilityChange() {
@@ -194,6 +202,16 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
   }
 
   render() {
+    let buyPrices: string[] = [], buyTotals: number[] = []
+    let sellPrices: string[] = [], sellTotals: number[] = []
+    if (this.state.bookData) {
+      const buy = calculatePricesAndTotals(this.state.bookData.buy, 'buy')
+      buyPrices = buy.prices
+      buyTotals = buy.totals
+      const sell = calculatePricesAndTotals(this.state.bookData.sell, 'sell')
+      sellPrices = sell.prices
+      sellTotals = sell.totals
+    }
     return (
       <div className="container">
         <div className='orderbook-header'>
@@ -206,15 +224,15 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
           {this.state.dataError !== '' && <div className='orderbook-error orderbook-status'>{UIMessages.ErrorDataParse}</div>}
           {this.state.connected && this.state.dataError === '' && this.state.bookData && !isMobileView() &&
             <div className='lists'>
-              <OrderList pricePoints={this.state.bookData.buy} listType={'buy'} />
-              <OrderList pricePoints={this.state.bookData.sell} listType={'sell'} />
+              <OrderList pricePoints={this.state.bookData.buy} listType={'buy'} prices={buyPrices} totals={buyTotals} />
+              <OrderList pricePoints={this.state.bookData.sell} listType={'sell'} prices={sellPrices} totals={sellTotals} />
             </div>
           }
           {this.state.connected && this.state.dataError === '' && this.state.bookData && isMobileView() &&
             <div className='lists'>
-              <OrderList pricePoints={this.state.bookData.sell} listType={'sell'} />
+              <OrderList pricePoints={this.state.bookData.sell} listType={'sell'} prices={sellPrices} totals={sellTotals} />
               {isMobileView() && <div style={{width: '100%', float: 'left', marginTop: '15px'}}>{this.spreadText()}</div>}
-              <OrderList pricePoints={this.state.bookData.buy} listType={'buy'} />
+              <OrderList pricePoints={this.state.bookData.buy} listType={'buy'} prices={buyPrices} totals={buyTotals} />
             </div>
           }
         </div>
