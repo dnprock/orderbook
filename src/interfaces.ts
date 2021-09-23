@@ -7,6 +7,7 @@ export interface OrderListProps {
   listType: 'buy' | 'sell'
   prices: string[]
   totals: number[]
+  maxTotal: number
 }
 
 export interface IDataHash {
@@ -40,6 +41,7 @@ export interface OrderListBarProps {
   color: string
   orientation: string
   totals: number[]
+  maxTotal: number
 }
 
 export interface ListRowProps {

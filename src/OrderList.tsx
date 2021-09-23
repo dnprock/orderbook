@@ -38,6 +38,7 @@ const OrderList = (props: OrderListProps) => {
           <OrderListBar
             width={width()} height={26 * props.prices.length} totals={props.totals}
             color={listColor()}
+            maxTotal={props.maxTotal}
             orientation={
               props.listType === 'sell' ? 'left' : (isMobileView() ? 'left' : 'right')}/>
         </div>

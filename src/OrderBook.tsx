@@ -6,6 +6,7 @@ import OrderList from './OrderList'
 import { UIMessages, BookDataConstants } from './Constants'
 import { calculatePricesAndTotals, calculateSpread, convertBookDataToHash, formatPrice, isMobileView } from './utilities'
 import throttle from 'lodash/throttle'
+import { concat } from 'lodash'
 
 const subBTCMessage = '{"event":"subscribe","feed":"book_ui_1","product_ids":["PI_XBTUSD"]}'
 const subETHMessage = '{"event":"subscribe","feed":"book_ui_1","product_ids":["PI_ETHUSD"]}'
@@ -204,6 +205,7 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
   render() {
     let buyPrices: string[] = [], buyTotals: number[] = []
     let sellPrices: string[] = [], sellTotals: number[] = []
+    let maxTotal = 0
     if (this.state.bookData) {
       const buy = calculatePricesAndTotals(this.state.bookData.buy, 'buy')
       buyPrices = buy.prices
@@ -211,6 +213,7 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
       const sell = calculatePricesAndTotals(this.state.bookData.sell, 'sell')
       sellPrices = sell.prices
       sellTotals = sell.totals
+      maxTotal = Math.max(...concat(buy.totals, sell.totals))
     }
     return (
       <div className="container">
@@ -224,15 +227,15 @@ class OrderBook extends React.Component<OrderBookProps, OrderBookState> {
           {this.state.dataError !== '' && <div className='orderbook-error orderbook-status'>{UIMessages.ErrorDataParse}</div>}
           {this.state.connected && this.state.dataError === '' && this.state.bookData && !isMobileView() &&
             <div className='lists'>
-              <OrderList pricePoints={this.state.bookData.buy} listType={'buy'} prices={buyPrices} totals={buyTotals} />
-              <OrderList pricePoints={this.state.bookData.sell} listType={'sell'} prices={sellPrices} totals={sellTotals} />
+              <OrderList pricePoints={this.state.bookData.buy} listType={'buy'} prices={buyPrices} totals={buyTotals} maxTotal={maxTotal} />
+              <OrderList pricePoints={this.state.bookData.sell} listType={'sell'} prices={sellPrices} totals={sellTotals} maxTotal={maxTotal} />
             </div>
           }
           {this.state.connected && this.state.dataError === '' && this.state.bookData && isMobileView() &&
             <div className='lists'>
-              <OrderList pricePoints={this.state.bookData.sell} listType={'sell'} prices={sellPrices} totals={sellTotals} />
+              <OrderList pricePoints={this.state.bookData.sell} listType={'sell'} prices={sellPrices} totals={sellTotals} maxTotal={maxTotal} />
               {isMobileView() && <div style={{width: '100%', float: 'left', marginTop: '15px'}}>{this.spreadText()}</div>}
-              <OrderList pricePoints={this.state.bookData.buy} listType={'buy'} prices={buyPrices} totals={buyTotals} />
+              <OrderList pricePoints={this.state.bookData.buy} listType={'buy'} prices={buyPrices} totals={buyTotals} maxTotal={maxTotal} />
             </div>
           }
         </div>

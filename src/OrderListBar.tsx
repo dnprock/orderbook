@@ -3,11 +3,10 @@ import { scaleLinear } from 'd3-scale'
 
 const OrderListBar = (props: OrderListBarProps) => {
   const barHeight = 26 // height for each bar
-  const max = Math.max(...props.totals.map((d) => { return d}))
 
   const xScale = scaleLinear()
               .range([0, props.width])
-              .domain([0, max])
+              .domain([0, props.maxTotal])
 
   return (
     <div className='orderlist-bar-chart'>
